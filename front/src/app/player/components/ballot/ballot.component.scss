@@ -1,0 +1,15 @@
+.ballot-btn {
+    font-size: 3rem;
+    border-radius: 3rem 1.5rem !important;
+    margin: .3rem;
+    width: calc(5rem + 5vw);
+    height: calc(3rem + 5vw);
+}
+
+.ballot-btns {}
+
+@import '../../../../mixins.scss';
+
+.prompt-title {
+    @include prompt-title;
+}

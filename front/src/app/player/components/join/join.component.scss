@@ -1,0 +1,9 @@
+form {
+    transition: all .5s;
+    overflow: hidden;
+}
+
+.join-info {
+    background-color: rgba(var(--text-hicon-rgb), .1);
+    border-radius: 2rem;
+}

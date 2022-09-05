@@ -1,0 +1,36 @@
+<div class="slide-wrapper">
+    <div class="voting mx-auto p-3 has-text-centered columns w-100 is-mobile">
+        <div *ngFor="let o of (promptIdOnBallot != undefined ? (sio.gameData?.qPromptAnswers?.[promptIdOnBallot]) : undefined)"
+            class="qAnswer-entry">
+            <div *ngIf="o.answer" class="qAnswer-card">
+                <div class="column card">
+                    <div class="card-content px-1 pt-1 pb-3">
+                        <div class="title is-size-5 has-text-weight-medium prompt-title">
+                            <i>{{o.promptText || 'loading...'}}</i>
+                        </div>
+                        <div class="title is-size-3 has-text-weight-bold">
+                            <p>{{'❝'+o.answer+'❞'}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="votes is-flex">
+                    <div *ngFor="let v of o.votes">
+                        <span class="tag vote" *oneTime [ngClass]="colorClasses[v.colorIndex]">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                        </span>
+                    </div>
+                </div>
+                <div *ngIf="promptIsVoted()">
+                    <div class="card">
+                    <p>
+                        votes for {{o.player}}
+                    </p>
+                    <p *ngFor="let v of o">
+                        {{v.playerName}}
+                    </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

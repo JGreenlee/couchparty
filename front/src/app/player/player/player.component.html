@@ -1,0 +1,30 @@
+<div class="background"></div>
+<div class="background"></div>
+
+<div [@routeAnimations]="o && o.activatedRouteData && o.activatedRouteData['animation']">
+    <router-outlet #o="outlet" (activate)="onRouterOutletActivate($event)"></router-outlet>
+</div>
+
+<app-socket-status></app-socket-status>
+
+<div class="nametag card px-2 py-1 is-size-6">
+    <p>{{sio.playerData?.myName}}</p>
+</div>
+
+<div #bootedDialog class="q-dialog modal">
+    <div class="modal-background"></div>
+    <div class="modal-content p-5">
+        <div class="card mx-auto px-3">
+            <div class="card-content has-text-centered">
+                <h1 class="title is-size-1 text-900 has-text-danger">
+                    :(
+                </h1>
+                <p>
+                    You have been removed from the game.
+                </p>
+                <p class="mt-2">You may return to join another game, if you wish.</p>
+                <a class="mt-3" href="/join"><button class="button is-neutral mt-3">BACK</button></a>
+            </div>
+        </div>
+    </div>
+</div>

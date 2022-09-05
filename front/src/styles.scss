@@ -1,0 +1,219 @@
+/* You can add global styles to this file, and also import other style files */
+/* universal styles for hosts and players alike */
+
+
+$tooltip-padding: 0.3rem 0.6rem 0.5rem;
+$tooltip-radius: 0.3rem;
+$tooltip-background-color: rgba(20,20,20,0.75);
+
+$body-size: 118%;
+
+@import "bulma/bulma.sass";
+@import '@creativebulma/bulma-tooltip/src/sass/index.sass';
+@import 'bulma-list/sass/bulma-list.sass';
+@import "./overrides.scss";
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@300;500;700&display=swap');
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css');
+
+html {
+  font-size: $body-size;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body {
+  display: block;
+}
+
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+}
+
+html,
+body {
+  overflow: hidden !important;
+}
+
+body,
+input,
+button,
+.text-wide {
+  font: 1.2rem "Nunito", "Dosis", Helvetica, sans-serif;
+}
+
+p,
+.text-condensed {
+  font-family: "Dosis", "Nunito", Helvetica, sans-serif;
+}
+
+.columns {
+  margin: 0;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.absolutely-centered {
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%, 50%);
+}
+
+.transition-200ms {
+  transition: all 200ms;
+}
+
+.fade-in-1s {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.text-900 {
+  font-weight: 900;
+}
+
+.text-700 {
+  font-weight: 700;
+}
+
+.text-600 {
+  font-weight: 600;
+}
+
+.text-400 {
+  font-weight: 400;
+}
+
+.card {
+  max-width: 40rem;
+  &.full {
+    min-width: 50vw;
+  }
+  &.is-big {
+    min-width: 28rem;
+  }
+  border-radius: 1rem !important;
+  max-width: 85vw;
+}
+
+.max-w-85 {
+  max-width: 85vw;
+}
+
+.button:hover {
+  filter:brightness(110%);
+}
+
+.button,
+select,
+input {
+  border-radius: .25rem .75rem !important;
+}
+
+.button,
+.pill,
+#lobby-list .auto-grid5>div {
+  font-weight: 600;
+  box-shadow: 0 -.3rem rgba(0, 0, 0, .1) inset !important;
+  border: 0;
+  border-radius: .25rem .75rem;
+  padding-bottom: calc(.5em + 1.2px);
+}
+
+.button.is-multiline {
+  white-space: normal;
+  height: auto;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
+
+.m-auto {
+  margin: auto !important;
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.ml-auto {
+  margin-left: auto !important;
+}
+
+.mr-auto {
+  margin-right: auto !important;
+}
+
+.q-dialog .modal-background {
+  -webkit-backdrop-filter: blur(.3rem);
+  backdrop-filter: blur(.3rem);
+  background-color: rgba(10, 10, 10, .5);
+}
+
+.stripey-blue {
+  color: white !important;
+  @include text-shadow;
+  background: repeating-linear-gradient(45deg, $primary--light, $primary--light 2.5rem, darken($primary--light, 1.5%) 2.5rem, darken($primary--light, 1.5%) 2.75rem);
+}
+
+html.theme--dark .stripey-blue {
+  background: repeating-linear-gradient(45deg, $primary--dark, $primary--dark 2.5rem, darken($primary--dark, 1.5%) 2.5rem, darken($primary--dark, 1.5%) 2.75rem);
+}
+
+.card:has(.stripey-blue) {
+  border-radius: 4rem 4rem 1rem 1rem !important;
+}
+
+.stripey-blue.card {
+  border-radius: 1rem 4rem !important;
+  transform: scale(1.05);
+}
+
+.background {
+  @include bg-wavy(circle at top left);
+  position: absolute;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.background~.background {
+  @include bg-wavy(circle at bottom right);
+}
+
+@media (orientation: portrait) {
+  #orientation-warning {
+    display: flex;
+  }
+}
+
+.slide-wrapper {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}

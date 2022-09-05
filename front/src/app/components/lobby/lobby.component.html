@@ -1,0 +1,36 @@
+<div class="slide-wrapper p-4">
+    <div class="lobby card full mx-auto p-0">
+        <div class="stripey-blue card full box is-flex-direction-column">
+            <div>
+                <h2 class="has-text-right is-size-3 text-condensed">
+                    Room code:<span id="span-room-code" class="is-size-1 ml-2 text-wide">{{sio.gameData?.roomCode ||
+                        "..."}}</span>
+                </h2>
+            </div>
+            <div class="columns is-mobile w-100 pb-3">
+                <div class="column mt-3 pb-1 has-text-left">
+                    <p class="has-text-left is-size-5 has-text-weight-semibold is-uppercase">
+                        Join on your phones
+                    </p>
+                    <p class="is-size-6">Head to quail.io and join using the room code!</p>
+                </div>
+                <div class="column is-flex p-0">
+                    <button class="start-btn button is-neutral is-align-self-flex-end ml-auto"
+                        [disabled]="!(sio.gameData?.playerNames && (sio.gameData?.playerNames!.length >= 3) && debug())" (click)="startGame()">
+                        START
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="columns w-100 px-2 is-mobile">
+            <div class="column auto-grid5 text-condensed">
+                <div *ngFor="let name of sio.gameData?.playerNames" class="button" (click)="bootPlayer(name);">{{name}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="notification">
+        <button class="delete"></button>
+        {{sio.gameData?.}}
+    </div> -->
+</div>

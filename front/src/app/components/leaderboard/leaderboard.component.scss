@@ -1,0 +1,15 @@
+@import '../../../overrides.scss';
+
+.container, .scores-list .columns {
+    max-width: 20rem !important;
+}
+
+.tag {
+    @include text-shadow;
+    height: 1.5rem;
+    border-radius: 0.75rem;
+}
+
+h1 {
+    @include stylish-title;
+}

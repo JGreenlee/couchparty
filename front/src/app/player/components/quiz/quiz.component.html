@@ -1,0 +1,56 @@
+<div class="slide-wrapper">
+    <div class="card mx-auto p-3">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="form-group field">
+                <label for="qFirstAnswer" class="label">{{sio.playerData?.qPrompts?.[0]?.promptText || 'loading...'}}</label>
+                <div class="control has-icons-right">
+                    <input formControlName="qFirstAnswer" id="qFirstAnswer" type="text" class="input form-control"
+                        placeholder="Max 50 characters"
+                        [ngClass]="f.qFirstAnswer.errors && f.qFirstAnswer.touched ? 'is-danger' : ''">
+                    <span class="icon is-small is-right">
+                        <i class="fas" [ngClass]="f.qFirstAnswer.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>
+                    </span>
+                </div>
+                <div *ngIf="f.qFirstAnswer.touched || f.qFirstAnswer.dirty">
+                    <p *ngIf="f.qFirstAnswer.errors?.['required']" class="help is-danger">Name is required.</p>
+                    <p *ngIf="f.qFirstAnswer.errors?.['minlength']" class="help is-danger">4+ characters please</p>
+                </div>
+            </div>
+            <div class="form-group field">
+                <label for="qSecondAnswer" class="label">{{sio.playerData?.qPrompts?.[1]?.promptText || 'loading...'}}</label>
+                <div class="control has-icons-right">
+                    <input formControlName="qSecondAnswer" id="qSecondAnswer" type="text" class="input form-control"
+                        placeholder="Max 50 characters"
+                        [ngClass]="f.qSecondAnswer.errors && f.qSecondAnswer.touched ? 'is-danger' : ''">
+                    <span class="icon is-small is-right">
+                        <i class="fas" [ngClass]="f.qSecondAnswer.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>
+                    </span>
+                </div>
+                <div *ngIf="f.qSecondAnswer.touched || f.qSecondAnswer.dirty">
+                    <p *ngIf="f.qSecondAnswer.errors?.['required']" class="help is-danger">Name is required.</p>
+                    <p *ngIf="f.qSecondAnswer.errors?.['minlength']" class="help is-danger">4+ characters please</p>
+                </div>
+            </div>
+            <div *ngIf="!quizSubmitted" class="field is-grouped is-justify-content-center">
+                <div class="control">
+                    <button type="submit" class="button is-link is-primary">Submit Answers</button>
+                </div>
+            </div>
+        </form>
+        
+        <!-- <div class="my-4">
+            <div *ngIf="f.qName.valid && f.qRoomCode.valid" class="py-2 join-info has-text-centered is-size-6">
+                <i *ngIf="!freeze && trySubmit()">...</i>
+                <div *ngIf="sio.playerData?.roomCode; else joined">
+                    <p>joined! <i class="fa fa-check"></i></p>
+                </div>
+                <ng-template #joined>
+                    <p *ngIf="joinedStatus!='404'; else invalid" class="is-danger">joining...</p>
+                    <ng-template #invalid>
+                        <p>invalid room code</p>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </div> -->
+    </div>
+</div>

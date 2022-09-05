@@ -1,0 +1,100 @@
+@import '../../../overrides.scss';
+
+.box {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    height: 100%;
+}
+
+.lobby {
+    min-height: 90vh;
+    padding: 0;
+}
+
+.lobby #span-room-code {
+    @include stylish-title;
+    display: inline-block;
+    padding: 0.2rem 1rem 0;
+    vertical-align: middle;
+    transform: translateY(-.3rem);
+    margin-left: 0.7rem !important;
+}
+
+.start-btn {
+    &[disabled] {
+        filter: blur(.1rem);
+        // background-color: #ddd;
+    }
+
+    transition: all .3s;
+}
+
+.auto-grid5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: .5rem;
+}
+
+.auto-grid5:empty:after {
+    font-size: 1rem;
+    min-width: 8rem;
+    max-width: 12rem;
+    content: "Nobody's here yet...";
+    white-space: nowrap;
+}
+
+.auto-grid5>div:nth-child(3n-2) {
+    background-color: var(--primary);
+}
+
+.auto-grid5>div:nth-child(3n-1) {
+    background-color: var(--secondary);
+}
+
+.auto-grid5>div:nth-child(3n) {
+    background-color: var(--tertiary);
+}
+
+.auto-grid5>div {
+    color: #eee;
+    min-width: 8rem;
+    max-width: 12rem;
+    position: relative;
+    text-align: center;
+    padding: .5rem .5rem .5em;
+    font-size: 1.4rem;
+    font-weight: 600;
+    box-shadow: 0 -.5rem rgba(0, 0, 0, .1) inset;
+    cursor: auto;
+}
+
+.auto-grid5>div:active {
+    pointer-events: none;
+}
+
+.auto-grid5>div:hover,
+#lobby-list .auto-grid5>div:active,
+#lobby-list .auto-grid5>div:focus,
+#lobby-list .auto-grid5>div:not(:hover):active {
+    background-color: desaturate($primary--light, 100%);
+    transition: background-color .2s;
+    animation: shake 0.65s;
+    animation-iteration-count: infinite;
+}
+
+.auto-grid5>div:hover:after {
+    position: absolute;
+    line-height: 1rem;
+    right: .5rem;
+    font-family: "FontAwesome";
+    font-weight: 400;
+    content: "\f057";
+    color: #f33;
+    pointer-events: all;
+    cursor: pointer;
+}
+
+.auto-grid5>div:hover:after:hover {
+    color: #f00;
+}

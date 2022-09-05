@@ -1,0 +1,126 @@
+$bg--light: #eee;
+$card-bg--light: #ffffff;
+$text--light: #000;
+$text-hicon--light: #000;
+$link--light: #0645ad;
+$primary--light: #007dde;
+$secondary--light: #00c89f;
+$tertiary--light: #f2225d;
+$quaternary--light: #e53ad5;
+
+$bg--dark: #3a393d;
+$card-bg--dark: #4c4a54;
+$text--dark: #ececec;
+$text-hicon--dark: #fff;
+$link--dark: #007dde;
+$primary--dark: mix($primary--light, $bg--dark, 85%);
+$secondary--dark: mix($secondary--light, $bg--dark, 85%);
+$tertiary--dark: mix($tertiary--light, $bg--dark, 85%);
+$quaternary--dark: mix($quaternary--light, $bg--dark, 85%);
+
+$light: (
+  'bg': $bg--light,
+  'card-bg': $card-bg--light,
+  'text': $text--light,
+  'text-hicon': $text-hicon--light,
+  'link': $link--light,
+  'primary': $primary--light,
+  'secondary': $secondary--light,
+  'tertiary': $tertiary--light,
+  'quaternary': $quaternary--light,
+);
+
+$dark: (
+  'bg': $bg--dark,
+  'card-bg': $card-bg--dark,
+  'text': $text--dark,
+  'text-hicon': $text-hicon--dark,
+  'link': $link--dark,
+  'primary': $primary--dark,
+  'secondary': $secondary--dark,
+  'tertiary': $tertiary--dark,
+  'quaternary': $quaternary--dark
+);
+
+$bg: 'bg';
+$card-bg: 'card-bg';
+$text: 'text';
+$text-hicon: 'text-hicon';
+$link: 'link';
+$primary: 'primary';
+$secondary: "secondary";
+$tertiary: 'tertiary';
+$quaternary: 'quaternary';
+
+html.theme--default {
+  @each $color, $value in $light {
+    --#{$color}: #{$value};
+    --#{$color}-rgb: #{red($value)}, #{green($value)}, #{blue($value)};
+  }
+}
+
+html.theme--dark {
+  @each $color, $value in $dark {
+    --#{$color}: #{$value};
+    --#{$color}-rgb: #{red($value)}, #{green($value)}, #{blue($value)};
+  }
+}
+
+// @mixin themed() {
+
+//   @each $theme,
+//   $map in $themes {
+//     .theme--#{$theme} & {
+//       $theme-map: () !global;
+
+//       @each $key,
+//       $submap in $map {
+//         $value: map-get(map-gevar(--themes, $theme), '#{$key}');
+//         $theme-map: map-merge($theme-map, ($key: $value)) !global;
+//       }
+
+//       @content;
+//       $theme-map: (
+//         ) !global;
+//     }
+//   }
+// }
+
+// @function t(key) {
+//   @return map-gevar(--theme-map, $key);
+// }
+
+// global
+html.theme--default {
+  ::placeholder {
+    color: #bbb;
+    opacity: 1;
+  }
+
+  :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #bbb;
+  }
+
+  ::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: #bbb;
+  }
+}
+
+html.theme--dark {
+  ::placeholder {
+    color: #aaa;
+    opacity: 1;
+  }
+
+  :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #aaa;
+  }
+
+  ::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: #999;
+  }
+}

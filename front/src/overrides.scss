@@ -1,0 +1,61 @@
+@import './themes.scss';
+@import './mixins.scss';
+
+body {
+  background-color: var(--bg) !important;
+}
+
+a {
+  color: var(--link) !important;
+}
+
+input,
+select {
+  background-color: rgba(var(--text-hicon-rgb), .06) !important;
+  border-color: rgba(var(--text-rgb), .04);
+  color: var(--text);
+  box-shadow: inset 0 0.0625em 0.125em rgb(10 10 10 / 5%) !important;
+}
+
+input:focus,
+select:focus {
+  border-color: rgba(var(--text-rgb), .3) !important;
+}
+
+input.is-danger {
+  border-color: #f14668;
+}
+
+.is-primary {
+  background-color: var(--primary) !important;
+  color: #fff !important;
+}
+
+.is-secondary {
+  background-color: var(--secondary) !important;
+  color: #fff !important;
+}
+
+.is-tertiary {
+  background-color: var(--tertiary) !important;
+  color: #fff !important;
+}
+
+.is-quaternary {
+  background-color: var(--quaternary) !important;
+  color: #fff !important;
+}
+
+.is-neutral {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+.card {
+  background-color: var(--card-bg) !important;
+}
+
+.label,
+.card {
+  color: var(--text);
+}

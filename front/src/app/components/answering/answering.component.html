@@ -1,0 +1,21 @@
+<div class="slide-wrapper p-4">
+    <div class="mx-auto p-0">
+        <div class="p-3 has-text-centered">
+            <div class="card is-big p-3 my-4">
+                <p>waiting for responses...</p>
+            </div>
+            <div class="is-flex is-flex-wrap-wrap is-justify-content-center">
+                <div *ngFor="let pn of sio.gameData?.playerNames" class="columns is-mobile py-0 px-2 m-2 card">
+                    <div class="pName column is-align-self-center">
+                        {{ pn }}
+                    </div>
+                    <div class="column is-flex is-align-items-center is-justify-content-end">
+                        <div class="circle-loader" [ngClass]="(hasAnswered(pn))?'load-complete':''">
+                            <div class="checkmark draw" [ngClass]="(hasAnswered(pn))?'is-block':'is-hidden'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

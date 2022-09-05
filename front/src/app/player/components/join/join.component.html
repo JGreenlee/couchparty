@@ -1,0 +1,52 @@
+<div class="slide-wrapper">
+    <div class="card mx-auto p-3">
+        <form [formGroup]="form" [style.max-height]="sio.playerData?.roomCode? '0' : '20rem'">
+            <div class="form-group field">
+                <label for="qName" class="label">What's your name?</label>
+                <div class="control has-icons-right">
+                    <input formControlName="qName" id="qName" type="text" class="input form-control"
+                        placeholder="Max 12 characters"
+                        [ngClass]="f.qName.errors && f.qName.touched ? 'is-danger' : ''">
+                    <span class="icon is-small is-right">
+                        <i class="fas" [ngClass]="f.qName.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>
+                    </span>
+                </div>
+                <div *ngIf="f.qName.touched || f.qName.dirty">
+                    <p *ngIf="f.qName.errors?.['required']" class="help is-danger">Name is required.</p>
+                    <p *ngIf="f.qName.errors?.['minlength']" class="help is-danger">4+ characters please</p>
+                </div>
+            </div>
+            <div class="form-group field">
+                <label for="qRoomCode" class="label">What's the password?</label>
+                <div class="control has-icons-right">
+                    <input formControlName="qRoomCode" id="qRoomCode" type="text" class="input form-control"
+                        [ngClass]="f.qRoomCode.errors && f.qRoomCode.touched ? 'is-danger' : ''" autocomplete="off"
+                        placeholder="Four-letter code" maxlength="4" oninput="this.value = this.value.toUpperCase();"
+                        (input)="freeze = false;">
+                    <span class="icon is-small is-right">
+                        <i class="fas" [ngClass]="f.qRoomCode.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>
+                    </span>
+                </div>
+                <div *ngIf="f.qRoomCode.touched || f.qRoomCode.dirty">
+                    <p *ngIf="f.qRoomCode.errors?.['required']" class="help is-danger">Room code is required</p>
+                    <p *ngIf="f.qRoomCode.errors?.['minlength'] || f.qRoomCode.errors?.['maxlength']"
+                        class="help is-danger">4 characters please</p>
+                </div>
+            </div>
+        </form>
+        <div class="my-4">
+            <div *ngIf="f.qName.valid && f.qRoomCode.valid" class="py-2 join-info has-text-centered is-size-6">
+                <i *ngIf="!freeze && trySubmit()">...</i>
+                <div *ngIf="sio.playerData?.roomCode; else joined">
+                    <p>joined! <i class="fa fa-check"></i></p>
+                </div>
+                <ng-template #joined>
+                    <p *ngIf="!joinFailedMessage; else invalid" class="is-danger">joining...</p>
+                    <ng-template #invalid>
+                        <p>{{joinFailedMessage}}</p>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
