@@ -1,5 +1,4 @@
-import { GameData } from "../../../../back/src/Game";
-import { QpaData, QuailGameData, QVote } from "../../../../back/src/Games/Quail/QuailGameData";
+import { QpaData } from "../../../../back/src/Games/Quail/QuailGameData";
 
 export function promptIsVoted(qpa : {promptId?: QpaData[]} | undefined, promptId: string) {
     if (qpa && qpa[promptId].find(o => o.finished)) {
@@ -40,9 +39,6 @@ export function findBallotIndex(qpa: {promptId?: QpaData[]}, param: string) {
         return undefined;
     }
 }
-
-// if return null, there are no matchups left
-// if return undefined, qvm is undefined
 
 export function readPromptIdAtIndex(qpa: {promptId?: QpaData[]}, bi: number): string | undefined {
     if (qpa) {

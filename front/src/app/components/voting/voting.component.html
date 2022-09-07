@@ -1,6 +1,6 @@
 <div class="slide-wrapper">
     <div class="voting mx-auto p-3 has-text-centered columns w-100 is-mobile">
-        <div *ngFor="let o of (promptIdOnBallot != undefined ? (sio.gameData?.qPromptAnswers?.[promptIdOnBallot]) : undefined)"
+        <div *ngFor="let o of (promptIdOnBallot != undefined ? sio.gameData?.qPromptAnswers?.[promptIdOnBallot] : [])"
             class="qAnswer-entry">
             <div *ngIf="o.answer" class="qAnswer-card">
                 <div class="column card">
@@ -25,7 +25,7 @@
                     <p>
                         votes for {{o.player}}
                     </p>
-                    <p *ngFor="let v of o">
+                    <p *ngFor="let v of o.votes">
                         {{v.playerName}}
                     </p>
                     </div>

@@ -58,6 +58,18 @@ p,
   margin: 0;
 }
 
+router-outlet {
+  display: none;
+}
+
+.routerContainer {
+  position: relative;
+}
+
+.routerContainer>* {
+  display: block;
+}
+
 .w-100 {
   width: 100%;
 }

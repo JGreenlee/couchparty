@@ -87,7 +87,7 @@ export class SocketStatusComponent implements AfterViewInit {
   getConnStatus() {
     let r = '';
 
-    if (this.sio.gameData?.roomCode != null) {
+    if (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) {
       r += 'Connected to game ' + this.sio.gameData?.roomCode + ' ✅';
     } else if (this.sio.isConnected()) {
       r += 'Not joined in any game yet... ⌛';

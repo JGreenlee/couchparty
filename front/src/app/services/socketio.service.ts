@@ -16,7 +16,8 @@ import { getCurrentPromptIndex } from './util';
 })
 export class SocketioService {
 
-  public DEBUG = true;
+  public DEBUG
+  = true;
 
   private socket?: Socket;
   playerData?: QuailPlayerData;
@@ -35,8 +36,6 @@ export class SocketioService {
   }
 
   connect(asHost: boolean) {
-    
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
 
     if (!this.socket) {
       this.getSocket().then((sock: Socket) => {
@@ -46,7 +45,7 @@ export class SocketioService {
           if (gameData) {
             this.updateMyGameData(gameData);
           } else {
-            this.router.navigate([asHost ? '/lobby' : '/play']);
+            this.router.navigate([asHost ? '/' : '/play']);
           }
         });
 
@@ -63,53 +62,53 @@ export class SocketioService {
     }
   }
 
-    
+
   isConnected(): boolean { return this.socket != undefined && this.socket.connected; }
-  isRegistered(): boolean { return this.gameData != null; }
+  isRegistered(): boolean { return (this.gameData || this.playerData) != null; }
 
   updateMyGameData(gd: QuailGameData) {
-    console.debug('updateMyGameData', gd);
-
-    if (gd != null) {
-      this.gameData = gd;
-      if (!this.gdDiffer) {
-        this.gdDiffer = this.differs.find(this.gameData).create();
+    Promise.resolve(null).then(() => {
+      console.debug('updateMyGameData', gd);
+      if (gd != null) {
+        this.gameData = gd;
+        // if (!this.gdDiffer) {
+        //   this.gdDiffer = this.differs.find(this.gameData).create();
+        // }
+        switch (gd.gameState) {
+          case QuailGameState.ANSWERING:
+            this.router.navigate(['/answering']);
+            break;
+          case QuailGameState.VOTING:
+            const i = getCurrentPromptIndex(gd.qPromptAnswers, Object.keys(gd.qPromptAnswers));
+            this.router.navigate(['/voting/' + i]);
+            break;
+          case QuailGameState.LEADERBOARD:
+            this.router.navigate(['/scores']);
+            break;
+        }
       }
-
-      switch (gd.gameState) {
-        case QuailGameState.ANSWERING:
-          this.router.navigate(['/answering']);
-          break;
-        case QuailGameState.VOTING:
-          const i = getCurrentPromptIndex(gd.qPromptAnswers, Object.keys(gd.qPromptAnswers));
-          this.router.navigate(['/voting/'+i]);
-          break;
-        case QuailGameState.LEADERBOARD:
-          this.router.navigate(['/scores']);
-          break;
-      }
-    }
+    });
   }
 
   updateMyPlayerData(pd: QuailPlayerData) {
-    console.debug('updateMyPlayerData', pd);
-
-    if (pd != null) {
-      this.playerData = pd;
-
-      switch (pd.gameState) {
-        case QuailGameState.ANSWERING:
-          this.router.navigate(['/quiz']);
-          break;
-        case QuailGameState.VOTING:
-          const i = getCurrentPromptIndex(pd.qVotingMatchups!, Object.keys(pd.qVotingMatchups!));
-          this.router.navigate(['/ballot/'+i]);
-          break;
-        case QuailGameState.LEADERBOARD:
-          this.router.navigate(['/rank']);
-          break;
+    Promise.resolve(null).then(() => {
+      console.debug('updateMyPlayerData', pd);
+      if (pd != null) {
+        this.playerData = pd;
+        switch (pd.gameState) {
+          case QuailGameState.ANSWERING:
+            this.router.navigate(['/quiz']);
+            break;
+          case QuailGameState.VOTING:
+            const i = getCurrentPromptIndex(pd.qPromptAnswers!, Object.keys(pd.qPromptAnswers!));
+            this.router.navigate(['/ballot/' + i]);
+            break;
+          case QuailGameState.LEADERBOARD:
+            this.router.navigate(['/rank']);
+            break;
+        }
       }
-    }
+    });
   }
 
   emit(e: string, ...args: any[]) {

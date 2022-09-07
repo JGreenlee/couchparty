@@ -4,7 +4,7 @@ import { Server, Socket } from "socket.io";
 import { QuailGameState } from "./Games/Quail/QuailGame";
 import { Player, Host } from "./Player";
 import { PlayerList } from "./PlayerList";
-import { generateRoomCode } from './util/util';
+import * as util from './util/util';
 
 export abstract class GameData {
 
@@ -38,7 +38,7 @@ export abstract class Game {
 
     protected constructor(hostSocket: Socket, socketIoServer: Server) {
 
-        this.roomCode = generateRoomCode();
+        this.roomCode = util.generateRoomCode();
 
         const uid = '000000000000'; // TODO placeholder UID for host
         this.host = this.createHost(hostSocket, uid, this.roomCode);
@@ -55,30 +55,30 @@ export abstract class Game {
         });
 
         this.host.socket.once('startGame', (callback) => {
-            this.start().then(callback);
             this.initScores();
+            this.start().then(callback);
         });
     }
 
     initScores() {
         this.gameData.scores = {};
-        this.playerList.names.forEach(n => {
-            this.gameData.scores[n] = 0;
-        });
+        for (let i = 0; i < this.playerList.names.length; i++) {
+            this.gameData.scores[this.playerList.names[i]] = 0;
+            this.playerList.objs[i].clientData.scores = this.gameData.scores;
+        }
     }
 
     // joins this game, creates a Player and returns the Player object
-    join(socket, name, uid): Player {
+    join(socket : Socket, name : string, uid : string): Player {
         let p = this.createPlayer(socket, name, uid);
         this.playerList.add(name, p);
         this.informHost();
         console.log("player " + name + " joined game");
-        socket.nickname = name;
         return p;
     }
 
-    abstract createPlayer(socket, name, uid): Player  // abstract
-    abstract createHost(socket, uid, gameId): Host // abstract
+    abstract createPlayer(socket: Socket, name: string, uid: string): Player  // abstract
+    abstract createHost(socket: Socket, uid: string, gameId: string): Host // abstract
 
     informHost() {
         console.debug(this.gameData);
@@ -91,7 +91,7 @@ export abstract class Game {
         }
     }
 
-    leave(socket) {
+    leave(socket : Socket) {
         for (let i = 0; i < this.playerList.names.length; i++) {
             if (this.playerList.objs[i].socket == socket) {
                 console.log('removing from gamedata.players: ' + this.playerList.names[i]);

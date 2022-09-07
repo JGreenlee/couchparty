@@ -1,20 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener, DoCheck } from '@angular/core';
-import { Meta } from '@angular/platform-browser';
-import { slider, stepper } from '../../route-animations';
+import { Component, OnInit, AfterViewInit, HostListener, DoCheck } from '@angular/core';
+import { min } from 'rxjs';
 import { SocketioService } from '../../services/socketio.service';
 
 @Component({
   selector: 'app-host',
   templateUrl: './host.component.html',
   styleUrls: ['./host.component.scss'],
-  animations: [slider, stepper]
 })
 export class HostComponent implements OnInit, AfterViewInit, DoCheck {
 
   isFullscreen: boolean = false;
   currentSlideComponent!: any;
 
-  constructor(private metaService: Meta, public sio: SocketioService) { }
+  constructor(public sio: SocketioService) { }
 
   ngOnInit(): void {
     this.sio.connect(true); // connect asHost
@@ -33,11 +31,15 @@ export class HostComponent implements OnInit, AfterViewInit, DoCheck {
 
   @HostListener("window:resize", ['event'])
   calculateScale() {
-    const targetWidth = 1000;
-    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-    const scaleFactor = vw / targetWidth;
-    const isBigEnough = vw > targetWidth || scaleFactor >= 1
-    document.documentElement.style.fontSize = isBigEnough ? '' : (118 * scaleFactor) + '%';
+    const minWidth = 1000, maxWidth = 1600;
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    if (vw < minWidth) {
+      const scaleFactor = vw / minWidth;
+      document.documentElement.style.fontSize = 118 * scaleFactor + '%';
+    } else if (vw > maxWidth) {
+      const scaleFactor = vw / maxWidth;
+      document.documentElement.style.fontSize = 118 * scaleFactor + '%';
+    }
   }
 
   @HostListener('document:fullscreenchange', ['$event'])
@@ -67,10 +69,6 @@ export class HostComponent implements OnInit, AfterViewInit, DoCheck {
 
   isDarkMode(): boolean {
     return document.documentElement.classList.contains('theme--dark');
-  }
-
-  public onRouterOutletActivate(event: any) {
-    this.currentSlideComponent = event;
   }
 
   ngDoCheck(): void {

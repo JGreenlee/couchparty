@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from '../app-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { PlayerComponent } from './player/player.component';
 import { JoinComponent } from './components/join/join.component';
@@ -22,7 +21,6 @@ import { RankComponent } from './components/rank/rank.component';
   ],
   imports: [
     AppRoutingModule,
-    BrowserAnimationsModule,
     CommonModule,
     ReactiveFormsModule,
     SharedModule,

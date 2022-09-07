@@ -18,8 +18,8 @@ export class BallotComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const param: string | null = this.route.snapshot.paramMap.get('ballotIndex');
 
-    if (this.sio.playerData?.qVotingMatchups && param) {
-      this.promptIdOnBallot = util.findBallotIndex(this.sio.playerData?.qVotingMatchups, param);
+    if (this.sio.playerData?.qPromptAnswers && param) {
+      this.promptIdOnBallot = util.findBallotIndex(this.sio.playerData?.qPromptAnswers, param);
     } else {
       console.error('URL param "ballotIndex" must be set');
     }
@@ -44,7 +44,7 @@ export class BallotComponent implements AfterViewInit {
 
   promptText(): string | undefined {
     if (this.promptIdOnBallot) {
-      return this.sio.playerData?.qVotingMatchups?.[this.promptIdOnBallot][0]?.promptText;
+      return this.sio.playerData?.qPromptAnswers?.[this.promptIdOnBallot][0]?.promptText;
     } else {
       return undefined;
     }

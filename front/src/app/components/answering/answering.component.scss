@@ -1,6 +1,6 @@
 $loader-size: 2em;
-$check-height: $loader-size/1.7;
-$check-width: $check-height/2;
+$check-height: calc($loader-size/1.7);
+$check-width: calc($check-height/2);
 $check-top: .72em;
 $check-left: .2em;
 $check-thickness: .35em;

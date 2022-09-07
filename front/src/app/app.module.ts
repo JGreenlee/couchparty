@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, CustomReuseStrategy } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
 // import { EmojiDirective } from './emoji.directive';
@@ -17,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SocketStatusComponent } from './components/socket-status/socket-status.component';
 import { PlayerModule } from './player/player.module';
 import { OneTimeDirective } from './one-time.directive';
+import { RouteReuseStrategy } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,6 @@ import { OneTimeDirective } from './one-time.directive';
     LobbyComponent,
     SplashComponent,
     LeaderboardComponent,
-    // EmojiDirective,
     HostComponent,
     NotFoundComponent,
     AnsweringComponent,
@@ -39,7 +39,10 @@ import { OneTimeDirective } from './one-time.directive';
     PlayerModule,
     SharedModule,
   ],
-  providers: [],
+  providers: [{
+    provide: RouteReuseStrategy,
+    useClass: CustomReuseStrategy
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

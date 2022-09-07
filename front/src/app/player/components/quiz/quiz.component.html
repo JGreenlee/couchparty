@@ -31,26 +31,14 @@
                     <p *ngIf="f.qSecondAnswer.errors?.['minlength']" class="help is-danger">4+ characters please</p>
                 </div>
             </div>
-            <div *ngIf="!quizSubmitted" class="field is-grouped is-justify-content-center">
+            <div *ngIf="!quizSubmitted; else submitted" class="field is-grouped is-justify-content-center">
                 <div class="control">
                     <button type="submit" class="button is-link is-primary">Submit Answers</button>
                 </div>
             </div>
+            <ng-template #submitted>
+                submitted <i class="fa fa-check"></i>
+            </ng-template>
         </form>
-        
-        <!-- <div class="my-4">
-            <div *ngIf="f.qName.valid && f.qRoomCode.valid" class="py-2 join-info has-text-centered is-size-6">
-                <i *ngIf="!freeze && trySubmit()">...</i>
-                <div *ngIf="sio.playerData?.roomCode; else joined">
-                    <p>joined! <i class="fa fa-check"></i></p>
-                </div>
-                <ng-template #joined>
-                    <p *ngIf="joinedStatus!='404'; else invalid" class="is-danger">joining...</p>
-                    <ng-template #invalid>
-                        <p>invalid room code</p>
-                    </ng-template>
-                </ng-template>
-            </div>
-        </div> -->
     </div>
 </div>

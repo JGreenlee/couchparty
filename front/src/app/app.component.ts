@@ -1,19 +1,31 @@
+import { trigger } from '@angular/animations';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
-import { slider, stepper } from './route-animations';
+import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
+import { slider } from './route-animations';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  animations: [slider, stepper]
+  template: ` <div [@anim]="childAnimData(o)">
+                <router-outlet #o="outlet"></router-outlet>
+              </div>`,
+  animations: [trigger('anim', slider)]
 })
 export class AppComponent implements AfterViewInit {
 
-  constructor(public metaService: Meta) { }
+  constructor() { }
 
   ngAfterViewInit() {
     this.applyCorrectTheme();
+  }
+
+  childAnimData(routerOutlet: RouterOutlet) {
+    if (routerOutlet.isActivated) {
+      return routerOutlet?.activatedRoute?.firstChild?.snapshot?.data['anim']
+        || routerOutlet?.activatedRoute?.firstChild?.firstChild?.snapshot?.data['anim']
+        || null;
+    }
+    return undefined;
   }
 
   @HostListener('window:storage', ['$event'])
@@ -28,4 +40,5 @@ export class AppComponent implements AfterViewInit {
       document.documentElement.classList.remove('theme--dark');
     }
   }
+
 }

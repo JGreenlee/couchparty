@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { slider, stepper } from 'src/app/route-animations';
 import { SocketioService } from 'src/app/services/socketio.service';
 import { QuailGameState } from '../../../../../back/src/Games/Quail/QuailGame';
 
@@ -9,8 +8,8 @@ import { QuailGameState } from '../../../../../back/src/Games/Quail/QuailGame';
   selector: 'app-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss'],
-  animations: [slider, stepper]
 })
+
 export class PlayerComponent implements OnInit, DoCheck {
 
   @ViewChild('bootedDialog')
@@ -40,10 +39,6 @@ export class PlayerComponent implements OnInit, DoCheck {
     const scaleFactor = vh / targetHeight;
     const isBigEnough = vh > targetHeight || scaleFactor >= 1
     document.documentElement.style.fontSize = isBigEnough ? '' : (118 * scaleFactor) + '%';
-  }
-
-  public onRouterOutletActivate(event: any) {
-    this.currentSlideComponent = event;
   }
 
   updateDarkMode(e) {

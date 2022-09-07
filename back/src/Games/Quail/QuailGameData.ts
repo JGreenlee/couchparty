@@ -9,12 +9,11 @@ export type QpaData = {
     player: string,
     promptText: string,
     answer: string,
-    votes: QVote,
+    votes: QVote[],
     finished?: string
 };
 
 export class QuailGameData extends GameData {
-
 
     pairings: {
         promptId?: string[];

@@ -5,41 +5,24 @@ import { Socket } from "socket.io";
 
 export class QuailPlayerData extends PlayerData {
 
-    qPrompts: { promptId: string; promptText: any; }[];
-    /*  // example qPrompts
-        playerData.qPrompts = [
-            { promptId: 'animal', promptText: 'dog'},
-            { promptId: 'biome', promptText: 'rainforest'},
-        ]
-    */
+    qPrompts: {
+        promptId: string;
+        promptText: string;
+    }[];
 
-    qVotingMatchups?: {
+    qPromptAnswers?: {
         promptId?: QpaData[];
     };
-    /*  // example qVotingMatchups
-        playerData.qVotingMatchups = {
-            'promptId': [
-                { playerName: 'p1', answer: 'foo' },
-                { playerName: 'p2', answer: 'bar' }
-            ]
-        }
-    */
 
     qMyVotes: {
         promptId?: number;
     }
-    /*  // example qVotingMatchups
-    playerData.qVotingMatchups = {
-        'animal': 0,
-        'biome': 1,
-        'operating-system': 0
-    }
-*/
 
     constructor(pd: Partial<QuailPlayerData>) {
         super(pd);
         this.qPrompts = [];
         this.qMyVotes = {};
+        // qpa is synced with gamedata.qpa, not defined here
     }
 }
 
@@ -49,21 +32,24 @@ export class QuailPlayer extends Player {
 
     constructor(socket: any, name: string, uid: string, gameId: string) {
         super(socket, name, uid, gameId);
-        this.clientData = new QuailPlayerData({ myName: name, roomCode: gameId, gameState: GameState.LOBBY, qPrompts: [] });
+        this.clientData = new QuailPlayerData({
+            myName: name,
+            roomCode: gameId,
+            gameState: GameState.LOBBY,
+            qPrompts: []
+        });
     }
 }
 
 export class QuailHost extends Host {
 
     clientData: QuailPlayerData;
-    // gameData: QuailGameData;
 
     constructor(socket: Socket, uid: string, gameId: string, gd: QuailGameData) {
         super(socket, uid, gameId);
-        this.clientData = new QuailPlayerData(
-            {
-                roomCode: gameId,
-                gameState: GameState.LOBBY,
-            });
+        this.clientData = new QuailPlayerData({
+            roomCode: gameId,
+            gameState: GameState.LOBBY,
+        });
     }
 }

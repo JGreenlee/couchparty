@@ -1,10 +1,9 @@
 import { Game, GameState } from '../../Game';
 import { PlayerList } from '../../PlayerList';
-import { sio } from '../../server';
-import { getRandFrom } from '../../util/util';
-import { prompts } from './prompts';
 import { QpaData, QuailGameData, QVote } from './QuailGameData';
 import { QuailHost, QuailPlayer } from "./QuailPlayer";
+import prompts from './prompts.json';
+import * as util from '../../util/util';
 
 export const GAME_TYPE_NAME_QUAIL: string = 'quail';
 
@@ -52,7 +51,7 @@ export class QuailGame extends Game {
             const p = this.playerList.objs[i]
             p.clientData.qMyVotes = {};
             p.clientData.qPrompts = [];
-            p.clientData.qVotingMatchups = {};
+            p.clientData.qPromptAnswers = this.gameData.qPromptAnswers;
         }
 
         return new Promise<void>(() => {
@@ -62,9 +61,8 @@ export class QuailGame extends Game {
     }
 
     allPlayersAnswered(): boolean {
-
         for (const player of this.playerList.names) {
-            if (!this.gameData.qPromptAnswers || Object.values(this.gameData.qPromptAnswers).find(o => { o.find(q => { return q.player == player }) })) {
+            if (!this.gameData.qPromptAnswers || !(Object.values(this.gameData.qPromptAnswers).find(o => { return o.find(q => { return q.player == player }) }))) {
                 return false;
             }
         }
@@ -79,7 +77,7 @@ export class QuailGame extends Game {
 
         const promptsArr = Object.keys(prompts);
         const numOfPrompts = this.playerList.names.length;
-        const randPrompts = getRandFrom(promptsArr, numOfPrompts);
+        const randPrompts = util.getRandFrom(promptsArr, numOfPrompts);
 
         for (let i = 0; i < numOfPrompts; i++) {
 
@@ -126,6 +124,7 @@ export class QuailGame extends Game {
     }
 
     startVoting() {
+        this.gameData.gameState = QuailGameState.VOTING;
 
         // send all players the voting matchups
         for (let i = 0; i < this.playerList.names.length; i++) {
@@ -175,10 +174,9 @@ export class QuailGame extends Game {
                     }
                 }
             });
-            player.clientData.qVotingMatchups = this.gameData.qPromptAnswers;
+            // player.clientData.qPromptAnswers = this.gameData.qPromptAnswers;
             player.inform(this.gameData);
         }
-        this.gameData.gameState = QuailGameState.VOTING;
         this.informHost();
     }
 
@@ -202,12 +200,12 @@ export class QuailGame extends Game {
             }
 
             if (votesForFirst > votesForSecond) {
-                this.gameData.scores[firstPlayerName] += 500;
+                this.gameData.scores[firstPlayerName] += 50;
             } else if (votesForFirst < votesForSecond) {
-                this.gameData.scores[secondPlayerName] += 500;
+                this.gameData.scores[secondPlayerName] += 50;
             } else {
-                this.gameData.scores[firstPlayerName] += 200;
-                this.gameData.scores[secondPlayerName] += 200;
+                this.gameData.scores[firstPlayerName] += 20;
+                this.gameData.scores[secondPlayerName] += 20;
             }
             return true;
         }

@@ -33,7 +33,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
         this.f.qSecondAnswer.setValue(this.sio.playerData?.qPrompts?.[1]?.promptText + '--'+this.sio.playerData?.myName);
         setTimeout(() => {
           this.onSubmit();
-        })
+        }, 300)
       }, 300);
     }
   }

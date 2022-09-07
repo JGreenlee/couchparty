@@ -8,8 +8,9 @@ import * as util from 'src/app/services/util';
   templateUrl: './voting.component.html',
   styleUrls: ['./voting.component.scss']
 })
-export class VotingComponent implements AfterViewInit {
+export class VotingComponent implements OnInit {
 
+  values = Object.values;
   promptIdOnBallot?: string;
   lastNumGenerated?: number;
   colorClasses: string[];
@@ -19,7 +20,7 @@ export class VotingComponent implements AfterViewInit {
     this.colorClasses = ['is-primary', 'is-secondary', 'is-tertiary', 'is-quaternary'];
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     const param: string | null = this.route.snapshot.paramMap.get('ballotIndex');
 
     if (this.sio.gameData?.qPromptAnswers && param) {
@@ -29,7 +30,7 @@ export class VotingComponent implements AfterViewInit {
 
   promptIsVoted() {
     const piv = util.promptIsVoted(this.sio.gameData?.qPromptAnswers, this.promptIdOnBallot || '');
-    if (piv) {      
+    if (piv) {
       if (!this.didReqNextBallot) {
         this.didReqNextBallot = true;
         setTimeout(() => {

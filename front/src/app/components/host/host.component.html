@@ -1,8 +1,8 @@
 <div class="background"></div>
 <div class="background"></div>
 
-<div [@routeAnimations]="o && o.activatedRouteData && o.activatedRouteData['animation']">
-    <router-outlet #o="outlet" (activate)="onRouterOutletActivate($event)"></router-outlet>
+<div class="routerContainer">
+    <router-outlet></router-outlet>
 </div>
 
 <app-socket-status></app-socket-status>

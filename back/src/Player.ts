@@ -1,18 +1,19 @@
 import { Socket } from 'socket.io'
-import { Game, GameData, GameState } from './Game';
+import { GameData, GameState } from './Game';
 import { QuailGameState } from './Games/Quail/QuailGame';
-import { QuailPlayerData } from './Games/Quail/QuailPlayer';
 
 export class PlayerData {
 
     myName: string;
     roomCode: string;
+    scores? : { playerName?: number };
     gameState: GameState | QuailGameState;  // syncs with gameData.gameState
 
     constructor(pd: Partial<PlayerData>) {
         this.myName = pd.myName || console.error('myName is not a string') || '';
         this.roomCode = pd.roomCode || console.error('roomCode is not a string') || 'ERR';
         this.gameState = pd.gameState || console.error('gameState is not valid') || GameState.LOBBY;
+        // scores is synced with gamedata.scores, not defined here
     }
 }
 
