@@ -1,0 +1,25 @@
+{
+  "name": "couchparty",
+  "version": "1.0.0",
+  "description": "- logic to remember registered players on reconnect (by UID)",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "front-build": "cd front && npm run build",
+    "back-build": "cd back && npm run build",
+    "build": "npm run front-build && npm run back-build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JGreenlee/couchparty.git"
+  },
+  "author": "Jack Greenlee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JGreenlee/couchparty/issues"
+  },
+  "homepage": "https://github.com/JGreenlee/couchparty#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}

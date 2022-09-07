@@ -1,13 +1,11 @@
 import express from 'express';
+import path from 'path';
 import http from 'http';
 
-import { Game } from "./Game";
 import { CouchSocket } from './CouchSocket';
 
 const app = express();
-app.use(express.static(__dirname + '/../public'))
-
-export let activeGames: { [roomCode: string]: Game } = {};
+app.use(express.static(path.join(__dirname, '/../../front/dist/front')));
 
 const httpConn = http.createServer(app);
 

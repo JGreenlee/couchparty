@@ -1,10 +1,11 @@
 import { Server } from 'socket.io';
 import { QuailGame, QuailGameOptions } from "./Games/Quail/QuailGame";
 import { Game, GameState } from "./Game";
-import { activeGames } from './server';
 
 export class CouchSocket {
+
     io: Server;
+    activeGames: { [roomCode: string]: Game } = {};
 
     constructor(conn, args) {
         this.io = new Server(conn, args);
@@ -18,15 +19,15 @@ export class CouchSocket {
                 let pubId: string = socket.roomCode;
                 let disconnG: Game;
                 if (pubId && pubId != "TEST") {
-                    disconnG = activeGames[pubId];
+                    disconnG = this.activeGames[pubId];
                     if (disconnG && disconnG.host.socket == socket) {
                         console.log(socket.id + ' was host, destroying game in 3 min');
                         const threeMins = 180000;
-                        activeGames[pubId].hostConnection(new Date().getMilliseconds() + threeMins);
+                        this.activeGames[pubId].hostConnection(new Date().getMilliseconds() + threeMins);
                         // destroy game after 3 minutes if host does not reconnect
                         setTimeout(() => {
                             if (socket.disconnected) {
-                                delete activeGames[pubId];
+                                delete this.activeGames[pubId];
                                 console.log('deleted game ' + pubId);
                             }
                         }, threeMins);
@@ -77,8 +78,8 @@ export class CouchSocket {
 
             socket.on('createGame', (gameType: string, gameOptions: QuailGameOptions) => {
                 socket.once('terminateGame', (termCallback: CallableFunction) => {
-                    if (socket.roomCode && activeGames[socket.roomCode]) {
-                        delete activeGames[socket.roomCode];
+                    if (socket.roomCode && this.activeGames[socket.roomCode]) {
+                        delete this.activeGames[socket.roomCode];
                         console.log('deleted game ' + socket.roomCode);
                         termCallback();
                     }
@@ -87,13 +88,13 @@ export class CouchSocket {
                 g = new QuailGame(socket, this.io, gameOptions);
                 socket.roomCode = g.gameData.roomCode;
                 socket.join(socket.roomCode);
-                activeGames[g.gameData.roomCode] = g;
+                this.activeGames[g.gameData.roomCode] = g;
                 console.log("created game", g.gameData.roomCode);
                 g.informHost();
             });
 
             socket.on('requestJoin', (r, callback: CallableFunction) => {
-                let foundGame = activeGames[r.roomCode];
+                let foundGame = this.activeGames[r.roomCode];
                 if (foundGame) {
                     if (!foundGame.playerList.names.includes(r.name)) {
                         let p = foundGame.join(socket, r.name, r.uid);
