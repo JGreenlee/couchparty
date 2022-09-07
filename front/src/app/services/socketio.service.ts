@@ -1,11 +1,12 @@
-import { DoCheck, Injectable, KeyValueChanges, KeyValueDiffer, KeyValueDiffers, OnChanges } from '@angular/core';
+import { Injectable, KeyValueChanges, KeyValueDiffer, KeyValueDiffers, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
-import { QuailGameState } from '../../../../back/src/Games/Quail/QuailGame';
 
-import { QuailGameData } from '../../../../back/src/Games/Quail/QuailGameData'
-import { QuailPlayerData } from '../../../../back/src/Games/Quail/QuailPlayer'
+import { QuailGameState } from '../../../../back/src/Games/Quail/QuailGame';
+import type { QuailGameData } from '../../../../back/src/Games/Quail/QuailGameData';
+import type { QuailPlayerData } from '../../../../back/src/Games/Quail/QuailPlayer';
+
 import { getCurrentPromptIndex } from './util';
 
 // type QuailPlayerData = any;
