@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "build": "tsc -p . && node dist/server.js",
+    "build": "npm update && tsc -p . && node dist/server.js",
     "dev": "nodemon -e ts --exec \"npm run build\"",
     "debug": "nodemon -e ts --exec \"npm run build\""
   },
