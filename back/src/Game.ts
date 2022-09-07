@@ -1,9 +1,9 @@
 // abstract class
 
-import { Server, Socket } from "socket.io";
-import { QuailGameState } from "./Games/Quail/QuailGame";
-import { Player, Host } from "./Player";
-import { PlayerList } from "./PlayerList";
+import { Server, Socket } from 'socket.io';
+import { QuailGameState } from './Games/Quail/QuailGame';
+import { Player, Host } from './Player';
+import { PlayerList } from './PlayerList';
 import * as util from './util/util';
 
 export abstract class GameData {
