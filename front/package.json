@@ -2,7 +2,6 @@
   "name": "front",
   "version": "0.0.0",
   "scripts": {
-    "ng": "nx",
     "build": "ng build",
     "test": "ng test",
     "serve": "ng serve front"
@@ -27,7 +26,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.1",
-    "@angular/compiler-cli": "^14.0.0-next.0",
+    "@angular/compiler-cli": "^14.2.1",
     "@creativebulma/bulma-tooltip": "^1.2.0",
     "bulma": "^0.9.4",
     "typescript": "~4.7.2"
