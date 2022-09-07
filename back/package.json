@@ -4,15 +4,14 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "build": "npm update && tsc -p . && node dist/server.js",
-    "dev": "nodemon -e ts --exec \"npm run build\"",
-    "debug": "nodemon -e ts --exec \"npm run build\""
+    "build": "npm update && tsc -p .",
+    "dev": "nodemon -e ts --exec \"npm run build && node dist/server.js\""
   },
   "author": "Jack Greenlee",
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.11",
-    "@types/node": "^18.7.15",
+    "@types/node": "^18.7.16",
     "express": "^4.17.1",
     "observable-slim": "^0.1.6",
     "socket.io": "^4.5.2",
