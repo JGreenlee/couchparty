@@ -30,7 +30,7 @@ export class SocketioService {
 
   async getSocket(): Promise<Socket> {
     if (!this.socket) {
-      this.socket = io(environment.SOCKET_ENDPOINT);
+      this.socket = io();
     }
 
     return this.socket;

@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.ts",
+  "engines": {
+    "node": "14.17.6"
+  },
   "scripts": {
     "front-update": "cd front && npm i && npm update",
     "back-update": "cd back && npm i && npm update",
     "update": "npm run front-update && npm run back-update",
     "front-build": "cd front && npm run build",
     "back-build": "cd back && npm run build",
-    "build": "npm run update && npm run front-build && npm run back-build"
+    "build": "npm run update && npm run front-build && npm run back-build",
+    "start": "cd back && npm run start",
+    "dev": "cd back && npm run dev"
   },
   "repository": {
     "type": "git",
@@ -22,7 +27,6 @@
   },
   "homepage": "https://github.com/JGreenlee/couchparty#readme",
   "dependencies": {
-    "front": "file:./front",
-    "back": "file:./back"
+
   }
 }
