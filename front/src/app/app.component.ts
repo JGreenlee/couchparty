@@ -6,17 +6,22 @@ import { slider } from './route-animations';
 
 @Component({
   selector: 'app-root',
-  template: ` <div [@anim]="childAnimData(o)">
+  template: ` <div [@.disabled]="disableAnimations" [@anim]="childAnimData(o)">
                 <router-outlet #o="outlet"></router-outlet>
               </div>`,
   animations: [trigger('anim', slider)]
 })
 export class AppComponent implements AfterViewInit {
 
+  disableAnimations: boolean = true;
+
   constructor() { }
 
   ngAfterViewInit() {
     this.applyCorrectTheme();
+    setTimeout(() => {
+      this.disableAnimations = false;
+    });
   }
 
   childAnimData(routerOutlet: RouterOutlet) {

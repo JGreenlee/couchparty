@@ -15,10 +15,11 @@
                     <p class="is-size-6">Head to quail.io and join using the room code!</p>
                 </div>
                 <div class="column is-flex p-0">
-                    <button class="start-btn button is-neutral is-align-self-flex-end ml-auto"
-                        [disabled]="!(sio.gameData?.playerNames && (sio.gameData?.playerNames!.length >= 3) && debug())" (click)="startGame()">
-                        START
-                    </button>
+                    <div class="has-tooltip-left is-align-self-flex-end ml-auto" [attr.data-tooltip]="hasEnoughPlayers() ? '' : '🥸 This game has a minimum of 3 players'">
+                        <button class="start-btn button is-neutral" [disabled]="!hasEnoughPlayers()" (click)="startGame()">
+                            PARTY 🥳
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

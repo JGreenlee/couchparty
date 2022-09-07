@@ -27,6 +27,15 @@ export class LobbyComponent implements AfterViewInit {
     this.sio.emit('bootPlayer', name);
   }
 
+  hasEnoughPlayers() {
+    const b = this.sio.gameData?.playerNames && (this.sio.gameData?.playerNames!.length >= 3);
+    if (b) {
+      this.debug();
+      return true;
+    }
+    return false;
+  }
+
   debug() {
     if (this.sio.DEBUG) {
       setTimeout(()=>{

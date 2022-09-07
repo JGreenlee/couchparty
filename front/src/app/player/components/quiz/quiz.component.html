@@ -5,7 +5,7 @@
                 <label for="qFirstAnswer" class="label">{{sio.playerData?.qPrompts?.[0]?.promptText || 'loading...'}}</label>
                 <div class="control has-icons-right">
                     <input formControlName="qFirstAnswer" id="qFirstAnswer" type="text" class="input form-control"
-                        placeholder="Max 50 characters"
+                        placeholder="Max 50 characters" maxlength="50"
                         [ngClass]="f.qFirstAnswer.errors && f.qFirstAnswer.touched ? 'is-danger' : ''">
                     <span class="icon is-small is-right">
                         <i class="fas" [ngClass]="f.qFirstAnswer.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>
@@ -20,7 +20,7 @@
                 <label for="qSecondAnswer" class="label">{{sio.playerData?.qPrompts?.[1]?.promptText || 'loading...'}}</label>
                 <div class="control has-icons-right">
                     <input formControlName="qSecondAnswer" id="qSecondAnswer" type="text" class="input form-control"
-                        placeholder="Max 50 characters"
+                        placeholder="Max 50 characters" maxlength="50"
                         [ngClass]="f.qSecondAnswer.errors && f.qSecondAnswer.touched ? 'is-danger' : ''">
                     <span class="icon is-small is-right">
                         <i class="fas" [ngClass]="f.qSecondAnswer.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>

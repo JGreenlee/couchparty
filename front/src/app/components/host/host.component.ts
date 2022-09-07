@@ -31,7 +31,7 @@ export class HostComponent implements OnInit, AfterViewInit, DoCheck {
 
   @HostListener("window:resize", ['event'])
   calculateScale() {
-    const minWidth = 1000, maxWidth = 1600;
+    const minWidth = 1000, maxWidth = 1400;
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     if (vw < minWidth) {
       const scaleFactor = vw / minWidth;

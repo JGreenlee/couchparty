@@ -6,7 +6,7 @@ import { SocketioService } from 'src/app/services/socketio.service';
   template: `
     <div class="socketStatus has-tooltip-arrow has-tooltip-right has-tooltip-multiline fade-in-1s"
       [attr.data-tooltip]="getConnStatus()">
-      <i class="button transition-200ms"
+      <i class="button"
           [ngClass]="!sio.isConnected()?'is-tertiary':sio.isRegistered()?'is-primary':'is-dark'">
           <i class="fa fa-solid" [ngClass]="sio.isConnected()?'fa-wifi':'fa-spin fa-circle-notch'"></i>
       </i>
@@ -18,6 +18,10 @@ import { SocketioService } from 'src/app/services/socketio.service';
       position: fixed;
       left: -0.4rem;
       top: 0.3rem;
+      &:hover {
+        transform: scale(1.2) translateX(10%) translateY(10%);
+      }
+      transition: transform 100ms;
     }
 
     .socketStatus > .button {
@@ -26,6 +30,8 @@ import { SocketioService } from 'src/app/services/socketio.service';
       width: 2.5rem;
       height: 2.5rem;
       font-size: 1.2rem;
+
+      transition: background-color 200ms;
     }
 
     .socketStatus::before {
@@ -73,7 +79,7 @@ export class SocketStatusComponent implements AfterViewInit {
   // TODO fix latency polling
   updateAvgLatency() {
     // console.log(this.qLatency());
-    
+
     // this.getQLatency().then((late: number) => {
     //   this.latencyArr.push(late);
     // });
@@ -88,7 +94,7 @@ export class SocketStatusComponent implements AfterViewInit {
     let r = '';
 
     if (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) {
-      r += 'Connected to game ' + this.sio.gameData?.roomCode + ' ✅';
+      r += 'Connected to game ' + (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) + ' ✅';
     } else if (this.sio.isConnected()) {
       r += 'Not joined in any game yet... ⌛';
     } else {

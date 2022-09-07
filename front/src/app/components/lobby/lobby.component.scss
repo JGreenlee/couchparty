@@ -1,4 +1,4 @@
-@import '../../../overrides.scss';
+@import '../../../assets/overrides.scss';
 
 .box {
     display: flex;
@@ -23,10 +23,15 @@
 
 .start-btn {
     &[disabled] {
-        filter: blur(.1rem);
+        cursor: not-allowed;
+        filter: blur(.25rem) contrast(50%);
         // background-color: #ddd;
+        &:hover {
+            filter: blur(.1rem) contrast(60%);
+            animation: shake 0.3s;
+            animation-iteration-count: 1;
+        }
     }
-
     transition: all .3s;
 }
 
@@ -40,7 +45,7 @@
     font-size: 1rem;
     min-width: 8rem;
     max-width: 12rem;
-    content: "Nobody's here yet...";
+    content: "Nobody's here yet... 🤡";
     white-space: nowrap;
 }
 

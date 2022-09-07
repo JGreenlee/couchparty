@@ -28,7 +28,7 @@
                     {{e[0]}}
                 </div>
                 <div class="column is-flex">
-                    <div class="tag is-primary is-align-self-center" [style.width]="e[1]+'%'">
+                    <div class="tag is-primary is-align-self-center" [style.width]="((e[1])/(rank(sio.gameData?.scores!)[0][1])*100)+'%'">
                         {{e[1]}}
                     </div>
                 </div>

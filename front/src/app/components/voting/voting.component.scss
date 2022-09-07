@@ -20,10 +20,6 @@
 
 .qAnswer-card .column {
     z-index: -1;
-
-    & .title {
-        color: var(--text);
-    }
 }
 
 .votes {
@@ -58,7 +54,7 @@
     animation: .5s ease-out 0s 1 spinIn;
 }
 
-@import '../../../mixins.scss';
+@import '../../../assets/mixins.scss';
 
 .prompt-title {
     @include prompt-title;

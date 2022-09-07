@@ -14,13 +14,13 @@
             <input #switchFullscreen id="switch-fullscreen" type="checkbox" name="switch-fullscreen"
                 [checked]="isFullscreen" (click)="applyFullscreenStatus($event);">
             <span class="slider"></span>
-            <span class="label-text px-2">» Fullscreen</span>
+            <span class="label-text px-2">» Fullscreen ↗️</span>
         </label>
         <label for="switch-darkmode" class="switch">
             <input #switchDarkMode id="switch-darkmode" type="checkbox" name="switch-darkmode"
                 [checked]="isDarkMode()" (click)="applyDarkModeStatus($event);">
             <span class="slider"></span>
-            <span class="label-text px-2">» Dark mode</span>
+            <span class="label-text px-2">» Dark mode 🌙</span>
         </label>
     </div>
 </div>
@@ -30,14 +30,14 @@
     <div class="modal-content p-5">
         <div class="card mx-auto px-3 pb-3">
             <div class="card-content">
-                <h1 class="title is-size-1 text-900 has-text-danger has-text-centered">
+                <h1 class="title is-size-1 text-900 has-text-centered">
                     <i class="fa fa-undo fa-flip-horizontal"></i>
                 </h1>
                 <p>
-                    You can only host games in landscape mode.
-                    If you're on a phone, you'll want to cast to a bigger screen so everyone can see.
+                    Heads up! You can only host games in landscape mode 🙆
+                    If you're on a phone, you'll want to cast to a bigger screen so everyone can see 👀
                 </p>
-                <p class="mt-2">Looking to join an existing lobby? <a href="">Click here!</a></p>
+                <p class="mt-2 has-text-right">If you're trying to join an existing lobby, go to <a href="/play">/play</a> 😉</p>
             </div>
         </div>
     </div>

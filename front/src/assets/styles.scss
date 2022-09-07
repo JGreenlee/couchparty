@@ -1,10 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
-/* universal styles for hosts and players alike */
-
 
 $tooltip-padding: 0.3rem 0.6rem 0.5rem;
 $tooltip-radius: 0.3rem;
-$tooltip-background-color: rgba(20,20,20,0.75);
+$tooltip-background-color: rgba(20,20,20,0.8);
 
 $body-size: 118%;
 
@@ -219,6 +216,10 @@ html.theme--dark .stripey-blue {
 @media (orientation: portrait) {
   #orientation-warning {
     display: flex;
+    & i {
+      color: rgba(var(--text-rgb), 80%);
+      text-shadow: -0.1rem 0.2rem 0 rgb(255 70 70 / 80%);
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-@import '../../../overrides.scss';
+@import '../../../assets/overrides.scss';
 
 #settings {
     display: block;
@@ -33,10 +33,12 @@
 
 #settings>.settings-text {
     position: absolute;
+    font-family: 'Dosis';
+    font-size: 1.4rem;
     line-height: 1rem;
     top: 0;
     height: 100%;
-    right: 0.5rem;
+    right: 0.4rem;
     opacity: 100%;
     margin-left: auto;
     text-align: center;
@@ -90,6 +92,7 @@ $switch-border-radius: .6rem;
 }
 
 .switch .label-text {
+    text-shadow: 0.03rem 0.06rem 0rem rgb(0 0 0 / 25%);
     line-height: $switch-height;
     font-size: $switch-height * .6;
     padding: 0;
