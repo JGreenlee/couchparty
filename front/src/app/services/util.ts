@@ -1,4 +1,4 @@
-import { QpaData } from "../../../../back/src/Games/Quail/QuailGameData";
+import type { QpaData } from "../../../../back/src/Games/Quail/QuailGameData";
 
 export function promptIsVoted(qpa : {promptId?: QpaData[]} | undefined, promptId: string) {
     if (qpa && qpa[promptId].find(o => o.finished)) {
