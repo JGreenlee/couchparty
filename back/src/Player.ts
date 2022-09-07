@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io'
+import { Socket } from '../node_modules/socket.io'
 import { GameData, GameState } from './Game';
 import { QuailGameState } from './Games/Quail/QuailGame';
 

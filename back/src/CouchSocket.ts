@@ -1,4 +1,4 @@
-import { Server } from 'socket.io';
+import { Server } from '../node_modules/socket.io';
 import { QuailGame, QuailGameOptions } from "./Games/Quail/QuailGame";
 import { Game, GameState } from "./Game";
 
