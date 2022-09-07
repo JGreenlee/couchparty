@@ -1,3 +1,5 @@
+@import './themes.scss';
+
 @mixin stylish-title {
     background-color: darken($primary--light, 12%);
     box-shadow: 0 .3rem darken($primary--light, 16%);
