@@ -7,7 +7,6 @@
 /bazel-out
 
 # Angular / Nx
-decorate-angular-cli.js
 nx.json
 
 # Node
