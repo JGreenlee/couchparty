@@ -46,54 +46,39 @@ export class CouchSocket {
             socket.on('register', (rd, ackRegister) => {
                 console.log('registering');
 
-                if (rd && rd.storedUID) {
-                    if (rd.roomCode) {
-                        const g = this.activeGames[rd.roomCode];
+                if (rd && rd['uid']) {
+                    if (rd['roomCode']) {
+                        console.log('code gud');
+                        
+                        const g = this.activeGames[rd['roomCode']];
                         if (g) {
+                            console.log('found gam');
+                            
                             let matchedPlayer: Player | undefined;
                             let matchedIsHost: boolean = false;
                             if (g.host.UID == rd.storedUID) {
                                 matchedPlayer = g.host;
                                 matchedIsHost = true;
                             } else {
-                                matchedPlayer = g.playerList.objs.find(p => { return p.UID == rd.storedUID });
+                                matchedPlayer = g.playerList.objs.find(p => { return p.UID == rd['uid'] });
                             }
 
                             if (matchedPlayer) {
+                                console.log('found plyr');
+                                
                                 console.log('reminding ' + matchedPlayer.name + ' who returned to game ' + g.roomCode);
                                 matchedPlayer.socket = socket;
                                 if (matchedIsHost) {
-                                    ackRegister(rd.storedUID, g.gameData);
+                                    ackRegister(rd['uid'], g.gameData);
                                 } else {
-                                    ackRegister(rd.storedUID, matchedPlayer.clientData);
+                                    ackRegister(rd['uid'], matchedPlayer.clientData);
                                 }
+                                return;
                             }
                         }
-
-                        // TODO remind logic
-                        console.log('remembered client, storedUID = ' + rd.storedUID);
-                        // // when found client who reconnected, let's get em back on track
-                        // // REMIND LOGIC
-                        // let client: Player | null;
-                        // const isHost = storedUID == this.host.UID;
-                        // if (isHost) {
-                        //     client = this.host;
-                        //     this.hostConnection(0); // 0 indicates reconnected, not disconnected
-                        // } else {
-                        //     client = this.getPlayerWithUID(storedUID);
-                        // }
-                        // if (client) {
-                        //     console.log('remembered client is ' + client.name);
-                        //     // when client recognized, remind them
-                        //     client.socket = socket;
-                        //     client.clientData.gameState = this.gameData.gameState;
-                        //     ackRegister(storedUID, client.clientData);
-                        // } else {
-                        //     console.log('player with UID ' + storedUID +" not found");
-                        // }
-                    } else {
-                        ackRegister(rd.storedUID);
                     }
+                    console.log('uid remembered, but not in any active game');
+                    ackRegister(rd.storedUID);
                 } else {
                     console.log('making new uid');
                     const uid = Math.random().toString(36).substring(3, 16) + new Date().getMilliseconds();

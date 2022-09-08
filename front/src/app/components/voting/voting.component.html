@@ -5,8 +5,9 @@
             <div *ngIf="o.answer" class="qAnswer-card">
                 <div class="column card">
                     <div class="card-content px-1 pt-1 pb-3">
-                        <div class="title is-size-5 has-text-weight-medium prompt-title">
-                            <i>{{o.promptText || 'loading...'}}</i>
+                        <div class="title is-size-5 has-text-weight-medium prompt-title"
+                            [ngClass]="o.promptText || 'text-loading'">
+                            <i>{{o.promptText || 'loading'}}</i>
                         </div>
                         <div class="title is-size-3 has-text-weight-bold">
                             <p>{{'❝'+o.answer+'❞'}}</p>
@@ -20,14 +21,14 @@
                         </span>
                     </div>
                 </div>
-                <div *ngIf="promptIsVoted()">
+                <div *ngIf="promptIsVoted()" class="voting-recap">
                     <div class="card">
-                    <p>
-                        votes for {{o.player}}
-                    </p>
-                    <p *ngFor="let v of o.votes">
-                        {{v.playerName}}
-                    </p>
+                        <p>
+                            votes for {{o.player}}
+                        </p>
+                        <p *ngFor="let v of o.votes">
+                            {{v.playerName}}
+                        </p>
                     </div>
                 </div>
             </div>

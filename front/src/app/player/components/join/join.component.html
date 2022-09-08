@@ -36,12 +36,12 @@
         </form>
         <div class="my-4">
             <div *ngIf="f.qName.valid && f.qRoomCode.valid" class="py-2 join-info has-text-centered is-size-6">
-                <i *ngIf="!freeze && trySubmit()">...</i>
+                <i *ngIf="!freeze && trySubmit()" class="text-loading"></i>
                 <div *ngIf="sio.playerData?.roomCode; else joined">
                     <p>joined! <i class="fa fa-check"></i></p>
                 </div>
                 <ng-template #joined>
-                    <p *ngIf="!joinFailedMessage; else invalid" class="is-danger">joining...</p>
+                    <p *ngIf="!joinFailedMessage; else invalid" class="is-danger text-loading">joining</p>
                     <ng-template #invalid>
                         <p>{{joinFailedMessage}}</p>
                     </ng-template>

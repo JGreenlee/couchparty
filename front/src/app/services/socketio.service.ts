@@ -29,7 +29,11 @@ export class SocketioService {
 
   async getSocket(): Promise<Socket> {
     if (!this.socket) {
-      this.socket = io();
+      if (environment.production) {
+        this.socket = io();
+      } else {
+        this.socket = io(environment.SOCKET_PORT);
+      }
     }
 
     return this.socket;
@@ -40,7 +44,7 @@ export class SocketioService {
     if (!this.socket) {
       this.getSocket().then((sock: Socket) => {
 
-        const rcData = JSON.parse(window.localStorage.getItem('qRoomCode') || '');
+        const rcData = JSON.parse(window.localStorage.getItem('qRoomCode') || '{}');
         let rRoomCode;
         if (rcData && new Date().getTime() < rcData['timestamp']+900000) {
           rRoomCode = rcData['roomCode'] || undefined;
@@ -51,6 +55,9 @@ export class SocketioService {
           uid: rUid || undefined,
           roomCode: rRoomCode || undefined
         }
+
+        console.log('remembered', rememberedData);
+
         sock.emit('register', rememberedData, (uid, gameData?) => {
           window.localStorage.setItem('qUserId', uid);
           this.uid = uid;

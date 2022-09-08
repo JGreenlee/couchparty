@@ -116,6 +116,20 @@ router-outlet {
   font-weight: 400;
 }
 
+.text-loading::after {
+  display: inline-block;
+  animation: dotty steps(1,end) 1s infinite;
+  content: '';
+}
+
+@keyframes dotty {
+    0%   { content: ''; }
+    25%  { content: '.'; }
+    50%  { content: '..'; }
+    75%  { content: '...'; }
+    100% { content: ''; }
+}
+
 .card {
   max-width: 40rem;
   &.full {
@@ -192,12 +206,12 @@ html.theme--dark .stripey-blue {
   background: repeating-linear-gradient(45deg, $primary--dark, $primary--dark 2.5rem, darken($primary--dark, 1.5%) 2.5rem, darken($primary--dark, 1.5%) 2.75rem);
 }
 
-.card:has(.stripey-blue) {
-  border-radius: 4rem 4rem 1rem 1rem !important;
+#couch .card:has(.stripey-blue) {
+  border-radius: 4rem 4rem 1rem 1rem;
 }
 
-.stripey-blue.card {
-  border-radius: 1rem 4rem !important;
+#couch .stripey-blue.card {
+  border-radius: 1rem 4rem;
   transform: scale(1.05);
 }
 
@@ -216,11 +230,39 @@ html.theme--dark .stripey-blue {
 @media (orientation: portrait) {
   #orientation-warning {
     display: flex;
+    font-size: initial;
     & i {
       color: rgba(var(--text-rgb), 80%);
       text-shadow: -0.1rem 0.2rem 0 rgb(255 70 70 / 80%);
     }
   }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@mixin fade-in($speed) {
+  animation: fadeIn $speed ease-in 1 forwards;
+  opacity: 0;
+}
+
+#couch .fade-in {
+  @include fade-in(200ms);
+  &.quick { @include fade-in(170ms)}
+  &.slow { @include fade-in(400ms)}
+}
+
+@keyframes emptyanim {}
+
+#couch [data-tooltip]:before, *[data-tooltip]:after {
+  opacity: 0;
+  animation: emptyanim;
+}
+
+#couch [data-tooltip]:hover:before, [data-tooltip]:hover:after {
+  @include fade-in(170ms);
 }
 
 .slide-wrapper {

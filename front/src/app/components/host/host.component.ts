@@ -3,7 +3,8 @@ import { SocketioService } from '../../services/socketio.service';
 
 @Component({
   selector: 'app-host',
-  templateUrl: './host.component.html'
+  templateUrl: './host.component.html',
+  styleUrls: ['./host.component.scss']
 })
 export class HostComponent implements OnInit, AfterViewInit, DoCheck {
 

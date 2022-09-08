@@ -1,6 +1,6 @@
 <div class="slide-wrapper">
     <div class="card mx-auto p-3 has-text-centered">
-        <div class="prompt-title px-4"><i>{{promptText() || 'loading...'}}</i></div>
+        <div class="prompt-title px-4"><i [ngClass]="promptText() || 'text-loading'">{{promptText() || 'loading'}}</i></div>
         <div *ngIf="isEligibleVoter(); else notEligible">
             <div *ngIf="promptIdOnBallot && sio.playerData?.qMyVotes?.[promptIdOnBallot] == undefined; else voted"
                 class="ballot-btns columns is-mobile p-3">

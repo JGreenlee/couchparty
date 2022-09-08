@@ -6,13 +6,43 @@
     margin: 2rem;
 }
 
-.qAnswer-entry:nth-child(odd) .qAnswer-card {
-    transform: rotateZ(-4deg);
+
+@keyframes firstSpinIn {
+    0% {
+        opacity: 0;
+        transform: scale(.3) translateX(5rem) translateY(12rem) rotateZ(360deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateX(0rem) translateY(0rem) rotateZ(-4deg);
+    }
+}
+
+.qAnswer-entry:nth-child(odd) {
+    opacity: 0;
+    animation: 1s ease-out 0s 1 firstSpinIn forwards;
+    & .voting-recap {
+        animation: .5s ease-out 0s 1 firstSpinIn forwards;
+    }
+}
+
+@keyframes secondSpinIn {
+    0% {
+        opacity: 0;
+        transform: scale(.3) translateX(5rem) translateY(12rem) rotateZ(360deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateX(0rem) translateY(0rem) rotateZ(4deg);
+    }
 }
 
 .qAnswer-entry:nth-child(even) {
-    transform: rotateZ(4deg);
-
+    opacity: 0;
+    animation: 1s ease-out 4s 1 secondSpinIn forwards;
+    & .voting-recap {
+        animation: .5s ease-out 0s 1 secondSpinIn forwards;
+    }
     & .votes {
         justify-content: end;
     }

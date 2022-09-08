@@ -22,6 +22,7 @@ export class JoinComponent implements OnInit, AfterViewInit {
   constructor(public sio: SocketioService) { }
 
   ngAfterViewInit(): void {
+    
     if (this.sio.DEBUG) {
       setTimeout(() => {
         const l = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 52)];
