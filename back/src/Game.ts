@@ -36,11 +36,10 @@ export abstract class Game {
     abstract gameData: GameData;
     abstract playerList: PlayerList<Player>;
 
-    protected constructor(hostSocket: Socket, socketIoServer: Server) {
+    protected constructor(hostSocket: Socket, socketIoServer: Server, roomCode : string) {
 
-        this.roomCode = util.generateRoomCode();
-
-        const uid = '000000000000'; // TODO placeholder UID for host
+        this.roomCode = roomCode;
+        const uid = 'HOST'; // TODO placeholder UID for host
         this.host = this.createHost(hostSocket, uid, this.roomCode);
         console.log('host joined game');
 

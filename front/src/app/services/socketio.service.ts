@@ -39,7 +39,11 @@ export class SocketioService {
 
     if (!this.socket) {
       this.getSocket().then((sock: Socket) => {
-        sock.emit('register', window.localStorage.getItem('quailUserId'), (uid, gameData?) => {
+        const registerData = { 
+          uid: window.localStorage.getItem('quailUserId'),
+          lastRoomCode: window.localStorage.getItem('quailRoomCode')
+        }
+        sock.emit('register', registerData, (uid, gameData?) => {
           window.localStorage.setItem('quailUserId', uid);
           this.uid = uid;
           if (gameData) {

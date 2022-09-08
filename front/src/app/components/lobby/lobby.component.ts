@@ -10,12 +10,17 @@ import { SocketioService } from 'src/app/services/socketio.service';
 export class LobbyComponent implements AfterViewInit {
 
   numPlayers: number = 0;
+  hostName: string = window.location.hostname;
 
   constructor(private router: Router, public sio : SocketioService) { }
 
   ngAfterViewInit(): void {
     this.sio.getSocket().then((sock) => {
-      sock.emit('createGame', 'quail', null, this.sio.updateMyGameData);
+      sock.timeout(5000).emit('createGame', null, (err)=>{
+        if (err) {
+          console.log('createGame failed', err);
+        }
+      });
     });
   }
 

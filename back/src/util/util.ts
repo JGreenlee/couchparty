@@ -3,15 +3,19 @@ export function getRandFrom(arr: string[], howMany: number): string[] {
     return shuffled.slice(0, howMany);
 }
 
+export function generateRoomCode(activeGames : string[]) {
 
-// TODO check if code is already taken
-export function generateRoomCode() {
-    const list = "BCDFGHJLMNPQRSTVWXZ"; // no vowels, nor Y or K
+    // generate 4-letter code, no vowels or K or Y
+    const list = "BCDFGHJLMNPQRSTVWXZ";
     let res = "";
     for (let i = 0; i < 4; i++) {
         let rnd = Math.floor(Math.random() * list.length);
         res = res + list.charAt(rnd);
     }
-    res = "TEST" // TODO remove this line if not testing
+    
+    if (activeGames.includes(res)) {  // already taken
+        return generateRoomCode(activeGames); // try again
+    }
+    // res = "TEST" // TODO remove this line if not testing
     return res;
 }

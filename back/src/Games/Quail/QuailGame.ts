@@ -28,8 +28,8 @@ export class QuailGame extends Game {
 
     playerList: PlayerList<QuailPlayer>;
 
-    constructor(hostSocket, socketIoServer, gameOptions: QuailGameOptions) {
-        super(hostSocket, socketIoServer);
+    constructor(hostSocket, socketIoServer, roomCode : string, gameOptions: QuailGameOptions) {
+        super(hostSocket, socketIoServer, roomCode);
         this.gameOptions = gameOptions;
         this.gameData = new QuailGameData({
             roomCode: this.roomCode,

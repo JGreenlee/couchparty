@@ -35,7 +35,7 @@ export class AppComponent implements AfterViewInit {
 
   @HostListener('window:storage', ['$event'])
   applyCorrectTheme() {
-    let storedTheme = localStorage.getItem('quailTheme');
+    let storedTheme = localStorage.getItem('qTheme');
     let systemIsDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (storedTheme && storedTheme == 'dark' || !storedTheme && systemIsDark) {
       document.documentElement.classList.add('theme--dark');

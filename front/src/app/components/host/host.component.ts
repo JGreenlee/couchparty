@@ -1,15 +1,12 @@
 import { Component, OnInit, AfterViewInit, HostListener, DoCheck } from '@angular/core';
-import { min } from 'rxjs';
 import { SocketioService } from '../../services/socketio.service';
 
 @Component({
   selector: 'app-host',
-  templateUrl: './host.component.html',
-  styleUrls: ['./host.component.scss'],
+  templateUrl: './host.component.html'
 })
 export class HostComponent implements OnInit, AfterViewInit, DoCheck {
 
-  isFullscreen: boolean = false;
   currentSlideComponent!: any;
 
   constructor(public sio: SocketioService) { }
@@ -40,35 +37,6 @@ export class HostComponent implements OnInit, AfterViewInit, DoCheck {
       const scaleFactor = vw / maxWidth;
       document.documentElement.style.fontSize = 118 * scaleFactor + '%';
     }
-  }
-
-  @HostListener('document:fullscreenchange', ['$event'])
-  updateFullsceenSwitch() {
-    this.isFullscreen = document.fullscreenElement != null;
-  }
-
-  applyFullscreenStatus(e) {
-    if (e?.target?.checked) {
-      document.documentElement.requestFullscreen().catch((err) => console.error(err));
-    } else {
-      document.exitFullscreen().catch((err) => console.error(err));
-    }
-  }
-
-  applyDarkModeStatus(e) {
-    if (e?.target?.checked) {
-      document.documentElement.classList.remove('theme--default');
-      document.documentElement.classList.add('theme--dark');
-      localStorage.setItem('quailTheme', 'dark');
-    } else {
-      document.documentElement.classList.remove('theme--dark');
-      document.documentElement.classList.add('theme--default');
-      localStorage.setItem('quailTheme', 'light');
-    }
-  }
-
-  isDarkMode(): boolean {
-    return document.documentElement.classList.contains('theme--dark');
   }
 
   ngDoCheck(): void {

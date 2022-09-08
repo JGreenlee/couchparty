@@ -45,11 +45,11 @@ export class PlayerComponent implements OnInit, DoCheck {
     if (e.target.checked) {
       document.documentElement.classList.remove('theme--default');
       document.documentElement.classList.add('theme--dark');
-      localStorage.setItem('quailTheme', 'dark');
+      localStorage.setItem('qTheme', 'dark');
     } else {
       document.documentElement.classList.remove('theme--dark');
       document.documentElement.classList.add('theme--default');
-      localStorage.setItem('quailTheme', 'default');
+      localStorage.setItem('qTheme', 'default');
     }
   }
 

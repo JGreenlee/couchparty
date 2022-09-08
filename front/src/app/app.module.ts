@@ -14,10 +14,10 @@ import { AnsweringComponent } from './components/answering/answering.component';
 import { VotingComponent } from './components/voting/voting.component';
 import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SocketStatusComponent } from './components/socket-status/socket-status.component';
 import { PlayerModule } from './player/player.module';
 import { OneTimeDirective } from './one-time.directive';
 import { RouteReuseStrategy } from '@angular/router';
+import { SettingsPanelComponent } from './components/settings-panel/settings-panel.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +29,7 @@ import { RouteReuseStrategy } from '@angular/router';
     NotFoundComponent,
     AnsweringComponent,
     VotingComponent,
+    SettingsPanelComponent,
     OneTimeDirective,
   ],
   imports: [

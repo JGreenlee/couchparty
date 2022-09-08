@@ -10,7 +10,7 @@
     top: .5rem;
     right: .05rem;
     max-width: 1rem;
-    padding: 2rem 1rem;
+    padding: 1.2rem 0.8rem;
     border-radius: .75rem 0 0 .75rem;
     box-shadow: 0 -.5rem rgba(0, 0, 0, .1) inset;
     animation-duration: .3s;
@@ -20,6 +20,9 @@
     transition-property: max-width, max-height, box-shadow, background-color;
     overflow: hidden;
     background-color: var(--primary);
+    &>*{
+        transform: translateY(-0.2rem);
+    }
 }
 
 #settings:hover {
@@ -34,11 +37,11 @@
 #settings>.settings-text {
     position: absolute;
     font-family: 'Dosis';
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     line-height: 1rem;
     top: 0;
     height: 100%;
-    right: 0.4rem;
+    right: 0.2rem;
     opacity: 100%;
     margin-left: auto;
     text-align: center;
@@ -54,6 +57,7 @@
 
 #settings .content {
     opacity: 0;
+    margin-right: -0.75rem;
     transition: opacity .3s, pointer-events .3s .1s;
     pointer-events: none;
 }
