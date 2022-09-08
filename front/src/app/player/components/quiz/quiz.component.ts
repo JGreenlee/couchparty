@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SocketioService } from 'src/app/services/socketio.service';
 
@@ -15,6 +15,7 @@ export class QuizComponent implements OnInit, AfterViewInit {
     qFirstAnswer: new FormControl('', [Validators.required]),
     qSecondAnswer: new FormControl('', [Validators.required])
   });
+  quizSubmitStatus?: string;
 
   constructor(public sio: SocketioService) { }
 
@@ -51,9 +52,13 @@ export class QuizComponent implements OnInit, AfterViewInit {
       },
     ]
 
-    this.sio.emit('qAnswers', qAnswers, (ack: boolean) => {
-      if (ack) {
+    this.sio.emitTimeout(5000, 'qAnswers', qAnswers, (err, ack: boolean) => {
+      if (err) {
         this.quizSubmitted = true;
+        this.quizSubmitStatus = 'err: ' + err;
+      } else if (ack) {
+        this.quizSubmitted = true;
+        this.quizSubmitStatus = 'submitted <i class="fa fa-check"></i>';
       }
     });
   }

@@ -11,14 +11,23 @@ a {
 input,
 select {
   background-color: rgba(var(--text-hicon-rgb), .06) !important;
-  border-color: rgba(var(--text-rgb), .04);
-  color: var(--text);
+  border-width: 0.15rem !important;
+  border-color: rgba(var(--text-rgb), .1) !important;
+  color: var(--text) !important;
   box-shadow: inset 0 0.0625em 0.125em rgb(10 10 10 / 5%) !important;
 }
 
 input:focus,
 select:focus {
   border-color: rgba(var(--text-rgb), .3) !important;
+}
+
+.input ~ .icon {
+  color:rgba(var(--text-rgb), .5) !important;
+}
+
+.input:focus ~ .icon {
+  color:rgba(var(--text-rgb), .8) !important;
 }
 
 input.is-danger {

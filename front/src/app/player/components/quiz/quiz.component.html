@@ -2,10 +2,11 @@
     <div class="card mx-auto p-3">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="form-group field">
-                <label for="qFirstAnswer" class="label">{{sio.playerData?.qPrompts?.[0]?.promptText || 'loading...'}}</label>
+                <label for="qFirstAnswer" class="label">{{sio.playerData?.qPrompts?.[0]?.promptText ||
+                    'loading...'}}</label>
                 <div class="control has-icons-right">
                     <input formControlName="qFirstAnswer" id="qFirstAnswer" type="text" class="input form-control"
-                        placeholder="Max 50 characters" maxlength="50"
+                        placeholder="Max 50 characters" maxlength="50" autocomplete="off"
                         [ngClass]="f.qFirstAnswer.errors && f.qFirstAnswer.touched ? 'is-danger' : ''">
                     <span class="icon is-small is-right">
                         <i class="fas" [ngClass]="f.qFirstAnswer.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>
@@ -17,10 +18,11 @@
                 </div>
             </div>
             <div class="form-group field">
-                <label for="qSecondAnswer" class="label">{{sio.playerData?.qPrompts?.[1]?.promptText || 'loading...'}}</label>
+                <label for="qSecondAnswer" class="label">{{sio.playerData?.qPrompts?.[1]?.promptText ||
+                    'loading...'}}</label>
                 <div class="control has-icons-right">
                     <input formControlName="qSecondAnswer" id="qSecondAnswer" type="text" class="input form-control"
-                        placeholder="Max 50 characters" maxlength="50"
+                        placeholder="Max 50 characters" maxlength="50" autocomplete="off"
                         [ngClass]="f.qSecondAnswer.errors && f.qSecondAnswer.touched ? 'is-danger' : ''">
                     <span class="icon is-small is-right">
                         <i class="fas" [ngClass]="f.qSecondAnswer.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>
@@ -37,7 +39,9 @@
                 </div>
             </div>
             <ng-template #submitted>
-                submitted <i class="fa fa-check"></i>
+                <div class="p-2 has-text-centered">
+                    {{quizSubmitStatus}} <i class="fa fa-check"></i>
+                </div>
             </ng-template>
         </form>
     </div>

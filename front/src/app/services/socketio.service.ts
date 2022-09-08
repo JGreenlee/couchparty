@@ -39,12 +39,20 @@ export class SocketioService {
 
     if (!this.socket) {
       this.getSocket().then((sock: Socket) => {
-        const registerData = { 
-          uid: window.localStorage.getItem('quailUserId'),
-          lastRoomCode: window.localStorage.getItem('quailRoomCode')
+
+        const rcData = JSON.parse(window.localStorage.getItem('qRoomCode') || '');
+        let rRoomCode;
+        if (rcData && new Date().getTime() < rcData['timestamp']+900000) {
+          rRoomCode = rcData['roomCode'] || undefined;
         }
-        sock.emit('register', registerData, (uid, gameData?) => {
-          window.localStorage.setItem('quailUserId', uid);
+        const rUid = window.localStorage.getItem('qUserId') || undefined;
+
+        const rememberedData = { 
+          uid: rUid || undefined,
+          roomCode: rRoomCode || undefined
+        }
+        sock.emit('register', rememberedData, (uid, gameData?) => {
+          window.localStorage.setItem('qUserId', uid);
           this.uid = uid;
           if (gameData) {
             this.updateMyGameData(gameData);
@@ -97,6 +105,10 @@ export class SocketioService {
   updateMyPlayerData(pd: QuailPlayerData) {
     Promise.resolve(null).then(() => {
       console.debug('updateMyPlayerData', pd);
+      if (pd.roomCode) {
+        const rcData = { roomCode: pd.roomCode, timestamp: new Date().getTime() }
+        window.localStorage.setItem('qRoomCode', JSON.stringify(rcData));
+      }
       if (pd != null) {
         this.playerData = pd;
         switch (pd.gameState) {
@@ -118,6 +130,14 @@ export class SocketioService {
   emit(e: string, ...args: any[]) {
     if (this.socket?.connected) {
       return this.socket.emit(e, ...args) != null;
+    } else {
+      return false;
+    }
+  }
+
+  emitTimeout(timeout : number, e : string, ...args: any[]) {
+    if (this.socket?.connected) {
+      return this.socket.timeout(timeout).emit(e, ...args) != null;
     } else {
       return false;
     }
