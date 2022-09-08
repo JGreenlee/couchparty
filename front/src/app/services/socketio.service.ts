@@ -17,7 +17,7 @@ import { getCurrentPromptIndex } from './util';
 })
 export class SocketioService {
 
-  public DEBUG = process.env['DEBUG'];
+  public DEBUG = environment.DEBUG;
 
   private socket?: Socket;
   playerData?: QuailPlayerData;
