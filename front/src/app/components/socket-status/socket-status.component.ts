@@ -94,9 +94,9 @@ export class SocketStatusComponent implements AfterViewInit {
     let r = '';
 
     if (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) {
-      r += 'Connected to game ' + (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) + ' ✅';
+      r += 'Connected, hosting game ' + (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) + ' ✅';
     } else if (this.sio.isConnected()) {
-      r += 'Not joined in any game yet... ⌛';
+      r += 'Connected, not joined in any game yet... ⌛';
     } else {
       r += 'Not connected ❌'
     }
