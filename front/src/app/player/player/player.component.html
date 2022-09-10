@@ -1,15 +1,18 @@
-<div class="background"></div>
-<div class="background"></div>
-
-<div class="routerContainer">
-    <router-outlet #o="outlet"></router-outlet>
-</div>
+<router-outlet #o="outlet"></router-outlet>
 
 <app-socket-status></app-socket-status>
 
-<div *ngIf="sio.playerData?.myName != undefined" class="nametag card px-2 py-1 is-size-6">
-    <p>{{sio.playerData?.myName}}</p>
-    <p>🪙: {{(sio.playerData?.scores?.[sio.playerData?.myName!]) || 0}}</p>
+<div *ngIf="sio.playerData?.myName != undefined" class="player-info-panel card">
+    <div class="nametag px-2 py-1 is-size-6">
+        <p>{{sio.playerData?.myName}}</p>
+        <p>🪙: {{(sio.playerData?.scores?.[sio.playerData?.myName!]) || 0}}</p>
+    </div>
+    <div class="hover-info p-3 has-text-centered">
+        <pre>{{getConnStatus()}}</pre>
+        <button class="button is-tertiary mt-3" (click)="sio.emit('quitGame')">
+            Quit Game
+        </button>
+    </div>
 </div>
 
 <div #bootedDialog class="q-dialog modal">

@@ -4,6 +4,7 @@ import { QpaData, QuailGameData, QVote } from './QuailGameData';
 import { QuailHost, QuailPlayer } from "./QuailPlayer";
 import prompts from './prompts.json';
 import * as util from '../../util/util';
+import { Socket } from 'socket.io';
 
 export const GAME_TYPE_NAME_QUAIL: string = 'quail';
 
@@ -28,8 +29,8 @@ export class QuailGame extends Game {
 
     playerList: PlayerList<QuailPlayer>;
 
-    constructor(hostSocket, socketIoServer, roomCode : string, gameOptions: QuailGameOptions) {
-        super(hostSocket, socketIoServer, roomCode);
+    constructor(hostSocket : Socket, hostUid : string, roomCode : string, gameOptions: QuailGameOptions) {
+        super(hostSocket, hostUid, roomCode);
         this.gameOptions = gameOptions;
         this.gameData = new QuailGameData({
             roomCode: this.roomCode,

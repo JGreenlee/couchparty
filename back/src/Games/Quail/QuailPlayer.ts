@@ -1,7 +1,7 @@
-import { Host, Player, PlayerData } from "../../Player";
-import { GameState } from "../../Game";
-import { QpaData, QuailGameData } from "./QuailGameData";
-import { Socket } from "socket.io";
+import { Host, Player, PlayerData } from '../../Player';
+import { GameState } from '../../Game';
+import { QpaData, QuailGameData } from './QuailGameData';
+import { Socket } from 'socket.io';
 
 export class QuailPlayerData extends PlayerData {
 

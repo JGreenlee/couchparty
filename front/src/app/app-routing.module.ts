@@ -74,7 +74,7 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
     
     return future.component == AppComponent
-      || future.component == HostComponent
-      || future.component == PlayerComponent;
+      || curr.component == HostComponent && future.component == HostComponent
+      || curr.component == PlayerComponent && future.component == PlayerComponent;
   }
 }

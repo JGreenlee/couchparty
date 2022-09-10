@@ -35,7 +35,7 @@
             </div>
         </form>
         <div class="my-4">
-            <div *ngIf="f.qName.valid && f.qRoomCode.valid" class="py-2 join-info has-text-centered is-size-6">
+            <div *ngIf="sio.playerData?.roomCode || f.qName.valid && f.qRoomCode.valid" class="py-2 join-info has-text-centered is-size-6">
                 <i *ngIf="!freeze && trySubmit()" class="text-loading"></i>
                 <div *ngIf="sio.playerData?.roomCode; else joined">
                     <p>joined! <i class="fa fa-check"></i></p>

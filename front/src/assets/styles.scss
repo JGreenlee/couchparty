@@ -1,13 +1,27 @@
-
 $tooltip-padding: 0.3rem 0.6rem 0.5rem;
 $tooltip-radius: 0.3rem;
-$tooltip-background-color: rgba(20,20,20,0.8);
+$tooltip-background-color: rgba(20, 20, 20, 0.8);
 
 $body-size: 118%;
 
-@import "bulma/bulma.sass";
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/helpers/_all.sass";
+
+@import "bulma/sass/components/card.sass";
+@import "bulma/sass/components/modal.sass";
+@import "bulma/sass/elements/box.sass";
+@import "bulma/sass/elements/button.sass";
+@import "bulma/sass/elements/container.sass";
+@import "bulma/sass/elements/form.sass";
+@import "bulma/sass/elements/icon.sass";
+@import "bulma/sass/elements/title.sass";
+@import "bulma/sass/form/_all.sass";
+@import "bulma/sass/grid/columns.sass";
+
 @import '@creativebulma/bulma-tooltip/src/sass/index.sass';
 @import 'bulma-list/sass/bulma-list.sass';
+
 @import "./overrides.scss";
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap');
@@ -22,6 +36,16 @@ html {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  box-sizing: border-box;
+
+  & * {
+
+    &,
+    &::before,
+    &::after {
+      box-sizing: inherit;
+    }
+  }
 }
 
 body {
@@ -57,14 +81,6 @@ p,
 
 router-outlet {
   display: none;
-}
-
-.routerContainer {
-  position: relative;
-}
-
-.routerContainer>* {
-  display: block;
 }
 
 .w-100 {
@@ -118,26 +134,43 @@ router-outlet {
 
 .text-loading::after {
   display: inline-block;
-  animation: dotty steps(1,end) 1s infinite;
+  animation: dotty steps(1, end) 1s infinite;
   content: '';
 }
 
 @keyframes dotty {
-    0%   { content: ''; }
-    25%  { content: '.'; }
-    50%  { content: '..'; }
-    75%  { content: '...'; }
-    100% { content: ''; }
+  0% {
+    content: '';
+  }
+
+  25% {
+    content: '.';
+  }
+
+  50% {
+    content: '..';
+  }
+
+  75% {
+    content: '...';
+  }
+
+  100% {
+    content: '';
+  }
 }
 
 .card {
   max-width: 40rem;
+
   &.full {
     min-width: 50vw;
   }
+
   &.is-big {
     min-width: 28rem;
   }
+
   border-radius: 1rem !important;
   max-width: 85vw;
 }
@@ -147,7 +180,7 @@ router-outlet {
 }
 
 .button:hover {
-  filter:brightness(110%);
+  filter: brightness(110%);
 }
 
 .button,
@@ -190,12 +223,6 @@ input {
   margin-right: auto !important;
 }
 
-.q-dialog .modal-background {
-  -webkit-backdrop-filter: blur(.3rem);
-  backdrop-filter: blur(.3rem);
-  background-color: rgba(10, 10, 10, .5);
-}
-
 .stripey-blue {
   color: white !important;
   @include text-shadow;
@@ -227,22 +254,12 @@ html.theme--dark .stripey-blue {
   @include bg-wavy(circle at bottom right);
 }
 
-@media (orientation: portrait) {
-  #orientation-warning {
-    display: flex;
-    font-size: initial;
-    & i {
-      color: rgba(var(--text-rgb), 80%);
-      text-shadow: -0.1rem 0.2rem 0 rgb(255 70 70 / 80%);
-    }
-  }
-}
-
 @keyframes fadeIn {
   to {
     opacity: 1;
   }
 }
+
 @mixin fade-in($speed) {
   animation: fadeIn $speed ease-in 1 forwards;
   opacity: 0;
@@ -250,18 +267,26 @@ html.theme--dark .stripey-blue {
 
 #couch .fade-in {
   @include fade-in(200ms);
-  &.quick { @include fade-in(170ms)}
-  &.slow { @include fade-in(400ms)}
+
+  &.quick {
+    @include fade-in(170ms)
+  }
+
+  &.slow {
+    @include fade-in(400ms)
+  }
 }
 
 @keyframes emptyanim {}
 
-#couch [data-tooltip]:before, *[data-tooltip]:after {
+#couch [data-tooltip]:before,
+*[data-tooltip]:after {
   opacity: 0;
   animation: emptyanim;
 }
 
-#couch [data-tooltip]:hover:before, [data-tooltip]:hover:after {
+#couch [data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
   @include fade-in(170ms);
 }
 

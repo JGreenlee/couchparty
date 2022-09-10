@@ -4,10 +4,10 @@ import { Server, Socket } from 'socket.io';
 import { QuailGameState } from './Games/Quail/QuailGame';
 import { Player, Host } from './Player';
 import { PlayerList } from './PlayerList';
-import * as util from './util/util';
 
 export abstract class GameData {
 
+    isGameData: boolean = true;
     roomCode: string;
     gameState: GameState | QuailGameState;
     scores: { playerName?: number };
@@ -36,11 +36,17 @@ export abstract class Game {
     abstract gameData: GameData;
     abstract playerList: PlayerList<Player>;
 
-    protected constructor(hostSocket: Socket, socketIoServer: Server, roomCode : string) {
+    /**
+     * Logic to create a Game. Called by super() in a subclass's constructor
+     * 
+     * @param hostSocket The Socket used for communication with the Host of the Game
+     * @param hostUid The User ID assigned to the device the Host is using
+     * @param roomCode The 4-letter code that will be used to identify this Game
+     */
+    protected constructor(hostSocket: Socket, hostUid: string, roomCode : string) {
 
         this.roomCode = roomCode;
-        const uid = 'HOST'; // TODO placeholder UID for host
-        this.host = this.createHost(hostSocket, uid, this.roomCode);
+        this.host = this.createHost(hostSocket, hostUid, this.roomCode);
         console.log('host joined game');
 
         this.host.socket.on('bootPlayer', (nameToBoot) => {

@@ -6,7 +6,9 @@ import { slider } from './route-animations';
 
 @Component({
   selector: 'app-root',
-  template: ` <div [@.disabled]="disableAnimations" [@anim]="childAnimData(o)">
+  template: ` <div class="background"></div>
+              <div class="background"></div>
+              <div [@.disabled]="disableAnimations" [@anim]="childAnimData(o)">
                 <router-outlet #o="outlet"></router-outlet>
               </div>`,
   animations: [trigger('anim', slider)]

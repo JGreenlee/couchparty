@@ -3,6 +3,7 @@ import { QuailGame, QuailGameOptions } from "./Games/Quail/QuailGame";
 import { Game, GameState } from "./Game";
 import { Player } from './Player';
 import * as util from './util/util';
+import { RmDirOptions } from 'fs';
 
 export class CouchSocket {
 
@@ -44,19 +45,15 @@ export class CouchSocket {
             });
 
             socket.on('register', (rd, ackRegister) => {
-                console.log('registering');
+                console.log('registering, rd=', rd);
 
                 if (rd && rd['uid']) {
                     if (rd['roomCode']) {
-                        console.log('code gud');
-                        
                         const g = this.activeGames[rd['roomCode']];
                         if (g) {
-                            console.log('found gam');
-                            
                             let matchedPlayer: Player | undefined;
                             let matchedIsHost: boolean = false;
-                            if (g.host.UID == rd.storedUID) {
+                            if (g.host.UID == rd['uid']) {
                                 matchedPlayer = g.host;
                                 matchedIsHost = true;
                             } else {
@@ -64,21 +61,22 @@ export class CouchSocket {
                             }
 
                             if (matchedPlayer) {
-                                console.log('found plyr');
-                                
+                                console.log('found player '+matchedPlayer.name+', ' + (matchedIsHost ? 'is host': 'is not host'));
                                 console.log('reminding ' + matchedPlayer.name + ' who returned to game ' + g.roomCode);
-                                matchedPlayer.socket = socket;
-                                if (matchedIsHost) {
-                                    ackRegister(rd['uid'], g.gameData);
-                                } else {
-                                    ackRegister(rd['uid'], matchedPlayer.clientData);
-                                }
+                                matchedPlayer.applyNewSocket(socket).then(() => {
+                                    if (matchedIsHost) {
+                                        ackRegister(rd['uid'], g.gameData);
+                                    } else {
+                                        ackRegister(rd['uid'], matchedPlayer?.clientData);
+                                    }
+                                });
                                 return;
                             }
+                            console.log('found ');
                         }
                     }
-                    console.log('uid remembered, but not in any active game');
-                    ackRegister(rd.storedUID);
+                    console.log('uid remembered as ' + rd['uid'] + ' but not in any active game.', 'roomcode was', rd.roomCode);
+                    ackRegister(rd['uid']);
                 } else {
                     console.log('making new uid');
                     const uid = Math.random().toString(36).substring(3, 16) + new Date().getMilliseconds();
@@ -87,7 +85,7 @@ export class CouchSocket {
                 }
             });
 
-            socket.on('createGame', (gameOptions) => {
+            socket.on('createGame', (hostUid, gameOptions) => {
                 // add terminateGame listener
                 socket.once('terminateGame', (termCallback: CallableFunction) => {
                     if (socket.roomCode && this.activeGames[socket.roomCode]) {
@@ -98,7 +96,7 @@ export class CouchSocket {
                 });
 
                 const roomCode = util.generateRoomCode(Object.keys(this.activeGames));
-                g = new QuailGame(socket, this.io, roomCode, gameOptions);
+                g = new QuailGame(socket, hostUid, roomCode, gameOptions);
                 socket.roomCode = g.gameData.roomCode;
                 socket.join(socket.roomCode);
                 this.activeGames[g.gameData.roomCode] = g;
@@ -109,14 +107,16 @@ export class CouchSocket {
             socket.on('requestJoin', (r, callback: CallableFunction) => {
                 let foundGame = this.activeGames[r.roomCode];
                 if (foundGame) {
+                    // if desired name not already in playerList
                     if (!foundGame.playerList.names.includes(r.name)) {
                         let p = foundGame.join(socket, r.name, r.uid);
+                        console.log('joining game with new Player:', p);
                         callback(true, p.clientData);
                     } else {
                         callback(false, 'name is taken');
                     }
                 } else {
-                    callback('room not found');
+                    callback(false, 'room not found');
                 }
             });
         });

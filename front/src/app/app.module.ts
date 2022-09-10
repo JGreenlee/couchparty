@@ -18,6 +18,7 @@ import { PlayerModule } from './player/player.module';
 import { OneTimeDirective } from './one-time.directive';
 import { RouteReuseStrategy } from '@angular/router';
 import { SettingsPanelComponent } from './components/settings-panel/settings-panel.component';
+import { OrientationNoticeComponent } from './components/orientation-notice/orientation-notice.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { SettingsPanelComponent } from './components/settings-panel/settings-pan
     AnsweringComponent,
     VotingComponent,
     SettingsPanelComponent,
+    OrientationNoticeComponent,
     OneTimeDirective,
   ],
   imports: [
