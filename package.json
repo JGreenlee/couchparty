@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "bump": "npm version patch",
+    "push": "npm version patch && git push",
     "front-update": "cd front && npm i && npm update",
     "back-update": "cd back && npm i && npm update",
     "update": "npm run front-update && npm run back-update",

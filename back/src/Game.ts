@@ -11,7 +11,7 @@ export abstract class Game {
 
     host: Host;
     destroyMethod?: CallableFunction;
-    onFinished! : CallableFunction;
+    onFinished! : (g: Game) => void;
 
     abstract gameTypeName: string;
     abstract gameData: GameData;
