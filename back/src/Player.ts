@@ -1,33 +1,28 @@
 import { Socket } from 'socket.io'
-import { GameData, GameState } from './Game';
-import { QuailGameState } from './Games/Quail/QuailGame';
+import { GameData, PublicGameData } from "./GameData";
 
-export class PlayerData {
+export abstract class PlayerData {
 
     isPlayerData: boolean = true;
     myName: string;
-    roomCode: string;
-    scores?: { playerName?: number };
-    gameState: GameState | QuailGameState;  // syncs with gameData.gameState
+
+    abstract public: { base: PublicGameData }
 
     constructor(pd: Partial<PlayerData>) {
         this.myName = pd.myName || console.error('myName is not a string') || '';
-        this.roomCode = pd.roomCode || console.error('roomCode is not a string') || 'ERR';
-        this.gameState = pd.gameState || console.error('gameState is not valid') || GameState.LOBBY;
-        // scores is synced with gamedata.scores, not defined here
     }
 }
 
 export abstract class Player {
 
-    UID: string;
+    uid: string;
     socket: Socket;
     name: string;
-    gameId: string;
+    roomCode: string;
 
     eventListeners = {};
 
-    abstract clientData: PlayerData;
+    abstract playerData: PlayerData;
 
     cards = {};
 
@@ -37,13 +32,15 @@ export abstract class Player {
      * @param socket The socket used for communication with the player
      * @param name The player's name as displayed
      * @param uid The User ID of the device the player is using
-     * @param gameId the room code of the game being joined
+     * @param roomCode the room code of the game being joined
      */
-    protected constructor(socket: Socket, name: string, uid: string, gameId: string) {
+    protected constructor(socket: Socket, uid: string, roomCode: string, name: string) {
         this.socket = socket;
+        this.uid = uid;
+        this.roomCode = roomCode;
         this.name = name;
-        this.UID = uid;
-        this.gameId = gameId;
+        socket['roomCode'] = roomCode;
+        socket.join(socket['roomCode']);
         socket.on('disconnecting', (reason) => {
             console.log(this.name + '\'s socket is disconnecting. storing listeners');
             // Store socket event listeners before disconnecting
@@ -53,25 +50,19 @@ export abstract class Player {
         });
     }
 
-    // getClientData() {
-    //     return this.gameData || this.playerData;
-    // }
-
     inform(gameData?: GameData): void {
-        if (gameData) {
-            this.clientData.gameState = gameData.gameState;
-        }
-        this.socket.emit('playerData', this.clientData);
+        this.socket.emit('playerData', this.playerData);
     }
 
     applyNewSocket(socket: Socket) {
-        return new Promise((res,rej) => {
+        return new Promise((res) => {
             this.socket = socket;
             for (const evName in this.eventListeners) {
                 this.eventListeners[evName].forEach((listener) => {
                     this.socket.addListener(evName, listener);
                 });
             }
+            this.socket['roomCode'] = this.playerData.public.base.roomCode;
             console.log('listeners for player '+this.name+' transferred to new socket');
             socket.emit('debug', 'listeners for '+this.name+' transferred to this new socket');
             res(true);
@@ -80,14 +71,14 @@ export abstract class Player {
 
     // // if a player gets disconnected and rejoins, this function send the data necessary
     // remind(gameData: GameData) {
-    //     this.clientData.gameState = gameData.gameState;
-    //     this.socket.emit('remind', this.clientData);
+    //     this.playerData.gameState = gameData.gameState;
+    //     this.socket.emit('remind', this.playerData);
     // }
 }
 
 export abstract class Host extends Player {
-    protected constructor(socket: Socket, uid: string, gameId: string) {
-        super(socket, 'HOST', uid, gameId);
+    protected constructor(hostSocket: Socket, hostUid: string, roomCode: string) {
+        super(hostSocket, hostUid, roomCode, 'HOST');
     }
 
     override inform(): void {

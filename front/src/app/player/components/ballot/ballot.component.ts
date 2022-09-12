@@ -10,31 +10,32 @@ import * as util from 'src/app/services/util';
 })
 export class BallotComponent implements AfterViewInit {
 
-  promptIdOnBallot?: string = '';
   didReqNextBallot: boolean = false;
 
   constructor(public sio: SocketioService, private router: Router, private route: ActivatedRoute) { }
 
   ngAfterViewInit(): void {
-    const param: string | null = this.route.snapshot.paramMap.get('ballotIndex');
-
-    if (this.sio.playerData?.qPromptAnswers && param) {
-      this.promptIdOnBallot = util.findBallotIndex(this.sio.playerData?.qPromptAnswers, param);
-    } else {
-      console.error('URL param "ballotIndex" must be set');
-    }
-
     if (this.sio.DEBUG) {
       if (this.isEligibleVoter()) {
         setTimeout(() => {
-          this.vote(0, 0);
+          // this.vote(0, 0);
         }, 500);
       }
     }
   }
 
+  promptIdOnBallot() : string {
+    const param: string | null = this.route.snapshot.paramMap.get('ballotIndex');
+
+    if (this.sio.playerData?.qPromptAnswers && param) {
+      return util.findBallotIndex(this.sio.playerData?.qPromptAnswers, param) || '';
+    } else {
+      return '';
+    }
+  }
+
   promptIsVoted() {
-    const piv = util.promptIsVoted(this.sio.gameData?.qPromptAnswers, this.promptIdOnBallot || '');
+    const piv = util.promptIsVoted(this.sio.gameData?.qPromptAnswers, this.promptIdOnBallot() || '');
     if (piv) {
       return true;
     } else {
@@ -43,20 +44,22 @@ export class BallotComponent implements AfterViewInit {
   }
 
   promptText(): string | undefined {
-    if (this.promptIdOnBallot) {
-      return this.sio.playerData?.qPromptAnswers?.[this.promptIdOnBallot][0]?.promptText;
+    const pid = this.promptIdOnBallot();
+    if (pid) {
+      return this.sio.playerData?.qPromptAnswers?.[pid][0]?.promptText;
     } else {
       return undefined;
     }
   }
 
   isEligibleVoter() {
-    return !this.sio.playerData?.qPrompts?.find(o => o.promptId == this.promptIdOnBallot)
+    return !this.sio.playerData?.qPrompts?.find(o => o.promptId == this.promptIdOnBallot())
   }
 
   vote(chosenIndex: number, colorIndex) {
-    if (this.promptIdOnBallot) {
-      this.sio.emit('qVote', this.promptIdOnBallot, chosenIndex, colorIndex, (playerData) => {
+    const pid = this.promptIdOnBallot();
+    if (pid) {
+      this.sio.emit('qVote', pid, chosenIndex, colorIndex, (playerData) => {
         this.sio.updateMyPlayerData(playerData);
       });
     }

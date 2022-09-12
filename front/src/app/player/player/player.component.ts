@@ -19,18 +19,23 @@ export class PlayerComponent implements OnInit, DoCheck, AfterViewInit {
   constructor(public sio: SocketioService, public metaService: Meta, public router: Router) { }
 
   ngOnInit() {
-    this.sio.connect(false); // connect not asHost
     this.sio.getSocket().then((sock) => {
       sock.on('sioPerform', (cmd: string, ...params) => {
         this[cmd](params);
         this.currentSlideComponent[cmd](params);
       });
     });
+    this.sio.onceRegistered().then(()=>{
+      if (!this.sio.playerData) {
+        this.sio.disableAnimations = false;
+        this.router.navigate(['/play']);
+      }
+    });
   }
 
   @HostListener("window:resize", ['event'])
   ngAfterViewInit(): void {
-    util.calculateScale(400, 800, 600, 1000);
+    util.calculateScale(400, 1200, 600, 1000);
   }
 
   updateDarkMode(e) {
@@ -52,8 +57,8 @@ export class PlayerComponent implements OnInit, DoCheck, AfterViewInit {
   getConnStatus() {
     let r = '';
 
-    if (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) {
-      r += 'Connected to game ' + (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) + ' ✅';
+    if (this.sio.gameData?.public?.base?.roomCode || this.sio.playerData?.public?.base?.roomCode) {
+      r += 'Connected to game ' + (this.sio.gameData?.public?.base?.roomCode || this.sio.playerData?.public?.base?.roomCode) + ' ✅';
     } else if (this.sio.isConnected()) {
       r += 'Connected, not joined in any game yet... ⌛';
     } else {
@@ -63,7 +68,7 @@ export class PlayerComponent implements OnInit, DoCheck, AfterViewInit {
     r += "\n\n";
 
     if (this.sio.uid) {
-      r += 'Registered UID: ' + this.sio.uid + ' ✅';
+      r += 'UID: ' + this.sio.uid + '\xa0✅';
     } else {
       r += 'UID not registered ❌'
     }

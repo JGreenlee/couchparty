@@ -4,7 +4,8 @@
             <div>
                 <h2 class="is-size-3 text-condensed">
                     Room code:<span id="span-room-code" class="is-size-1 ml-2 text-wide"
-                        [ngClass]="sio.gameData?.roomCode || 'text-loading'">{{sio.gameData?.roomCode || ""}}</span>
+                        [ngClass]="sio.gameData?.public?.base?.roomCode || 'text-loading'">{{sio.gameData?.public?.base?.roomCode
+                        || ""}}</span>
                 </h2>
             </div>
             <div class="columns is-mobile w-100 pb-3">
@@ -25,10 +26,8 @@
                 </div>
             </div>
         </div>
-        <div class="columns w-100 px-2 is-mobile">
-            <div class="column auto-grid5 text-condensed">
-                <div *ngFor="let name of sio.gameData?.playerNames" class="button" (click)="bootPlayer(name);">{{name}}
-                </div>
+        <div class="entrant-names text-condensed">
+            <div *ngFor="let name of sio.gameData?.playerNames" class="button" (click)="bootPlayer(name);">{{name}}
             </div>
         </div>
     </div>

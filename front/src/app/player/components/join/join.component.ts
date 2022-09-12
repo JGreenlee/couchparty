@@ -41,9 +41,9 @@ export class JoinComponent implements AfterViewInit {
     if (!this.freeze && this.f.qName.valid && this.f.qRoomCode.valid) {
       this.freeze = true;
       this.sio.emit('requestJoin', {
+        'uid': this.sio.uid,
         'roomCode': this.f.qRoomCode.value,
         'name': this.f.qName.value,
-        'uid': this.sio.uid
       }, (success, response) => {
         if (success) {
           this.sio.updateMyPlayerData(response);

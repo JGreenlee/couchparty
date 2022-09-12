@@ -3,8 +3,8 @@
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="form-group field">
                 <label for="qFirstAnswer" class="label"
-                    [ngClass]="sio.playerData?.qPrompts?.[0]?.promptText || 'text-loading'">
-                    {{sio.playerData?.qPrompts?.[0]?.promptText || 'loading...'}}
+                    [ngClass]="sio.playerData?.qPrompts?.[0]?.promptText ? '' : 'text-loading'">
+                    {{sio.playerData?.qPrompts?.[0]?.promptText || 'loading'}}
                 </label>
                 <div class="control has-icons-right">
                     <input formControlName="qFirstAnswer" id="qFirstAnswer" type="text" class="input form-control"
@@ -21,8 +21,8 @@
             </div>
             <div class="form-group field">
                 <label for="qSecondAnswer" class="label"
-                    [ngClass]="sio.playerData?.qPrompts?.[1]?.promptText || 'text-loading'">
-                    {{sio.playerData?.qPrompts?.[1]?.promptText || 'loading...'}}
+                    [ngClass]="sio.playerData?.qPrompts?.[1]?.promptText ? '' : 'text-loading'">
+                    {{sio.playerData?.qPrompts?.[1]?.promptText || 'loading'}}
                 </label>
                 <div class="control has-icons-right">
                     <input formControlName="qSecondAnswer" id="qSecondAnswer" type="text" class="input form-control"

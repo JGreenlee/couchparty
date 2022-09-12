@@ -93,8 +93,8 @@ export class SocketStatusComponent implements AfterViewInit {
   getConnStatus() {
     let r = '';
 
-    if (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) {
-      r += 'Connected, hosting game ' + (this.sio.gameData?.roomCode || this.sio.playerData?.roomCode) + ' ✅';
+    if (this.sio.gameData?.public?.base?.roomCode || this.sio.playerData?.public?.base?.roomCode) {
+      r += 'Connected to game ' + (this.sio.gameData?.public?.base?.roomCode || this.sio.playerData?.public?.base?.roomCode) + ' ✅';
     } else if (this.sio.isConnected()) {
       r += 'Connected, not joined in any game yet... ⌛';
     } else {
@@ -104,7 +104,7 @@ export class SocketStatusComponent implements AfterViewInit {
     r += "\n\n";
 
     if (this.sio.uid) {
-      r += 'Registered UID: ' + this.sio.uid + ' ✅';
+      r += 'UID: ' + this.sio.uid + '\xa0✅';
     } else {
       r += 'UID not registered ❌'
     }

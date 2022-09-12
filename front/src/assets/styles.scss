@@ -13,8 +13,8 @@ $body-size: 118%;
 @import "bulma/sass/elements/box.sass";
 @import "bulma/sass/elements/button.sass";
 @import "bulma/sass/elements/container.sass";
-@import "bulma/sass/elements/form.sass";
 @import "bulma/sass/elements/icon.sass";
+@import "bulma/sass/elements/tag.sass";
 @import "bulma/sass/elements/title.sass";
 @import "bulma/sass/form/_all.sass";
 @import "bulma/sass/grid/columns.sass";
@@ -85,6 +85,13 @@ router-outlet {
 
 .w-100 {
   width: 100%;
+}
+
+.anim-zoom {
+  &:hover {
+    transition: transform 100ms !important;
+    transform: scale(1.2);
+  }
 }
 
 .absolutely-centered {
@@ -160,18 +167,20 @@ router-outlet {
   }
 }
 
-.card {
-  max-width: 40rem;
+#couch .card {
 
   &.full {
-    min-width: 50vw;
+    min-width: 85vw;
   }
 
   &.is-big {
     min-width: 28rem;
   }
 
-  border-radius: 1rem !important;
+  border-radius: 1rem;
+}
+
+.card {
   max-width: 85vw;
 }
 
@@ -191,7 +200,7 @@ input {
 
 .button,
 .pill,
-#lobby-list .auto-grid5>div {
+#lobby-list .entrant-names>div {
   font-weight: 600;
   box-shadow: 0 -.3rem rgba(0, 0, 0, .1) inset !important;
   border: 0;
@@ -280,13 +289,13 @@ html.theme--dark .stripey-blue {
 @keyframes emptyanim {}
 
 #couch [data-tooltip]:before,
-*[data-tooltip]:after {
+#couch [data-tooltip]:after {
   opacity: 0;
   animation: emptyanim;
 }
 
 #couch [data-tooltip]:hover:before,
-[data-tooltip]:hover:after {
+#couch [data-tooltip]:hover:after {
   @include fade-in(170ms);
 }
 

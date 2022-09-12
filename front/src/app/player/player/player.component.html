@@ -1,17 +1,12 @@
 <router-outlet #o="outlet"></router-outlet>
 
-<app-socket-status></app-socket-status>
-
 <div *ngIf="sio.playerData?.myName != undefined" class="player-info-panel card">
     <div class="nametag px-2 py-1 is-size-6">
         <p>{{sio.playerData?.myName}}</p>
-        <p>🪙: {{(sio.playerData?.scores?.[sio.playerData?.myName!]) || 0}}</p>
+        <p>🪙: {{(sio.playerData?.public?.base?.scores?.[sio.playerData?.myName!]) || 0}}</p>
     </div>
     <div class="hover-info p-3 has-text-centered">
         <pre>{{getConnStatus()}}</pre>
-        <button class="button is-tertiary mt-3" (click)="sio.emit('quitGame')">
-            Quit Game
-        </button>
     </div>
 </div>
 

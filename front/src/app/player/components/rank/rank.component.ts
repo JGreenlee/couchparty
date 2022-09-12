@@ -13,7 +13,7 @@ export class RankComponent implements OnInit {
   ngOnInit(): void { }
 
   getRank(): string {
-    const s = this.sio.playerData?.scores!;
+    const s = this.sio.playerData?.public?.base?.scores;
     if (s) {
       const sorted = Object.keys(s).sort(function (a, b) { return s[b] - s[a] });
       const i = sorted.indexOf(this.sio.playerData?.myName!) + 1;

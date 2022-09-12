@@ -1,36 +1,16 @@
 // abstract class
 
-import { Server, Socket } from 'socket.io';
-import { QuailGameState } from './Games/Quail/QuailGame';
+import { Socket } from 'socket.io';
+import { GameData } from './GameData';
 import { Player, Host } from './Player';
 import { PlayerList } from './PlayerList';
-
-export abstract class GameData {
-
-    isGameData: boolean = true;
-    roomCode: string;
-    gameState: GameState | QuailGameState;
-    scores: { playerName?: number };
-    playerNames: string[];
-
-    constructor(gd: Partial<GameData>) {
-        this.roomCode = gd.roomCode || console.error("roomCode is not a string") || 'ERR';
-        this.gameState = gd.gameState || console.error("gameState invalid") || GameState.PAUSED;
-        this.scores = gd.scores || {};
-        this.playerNames = gd.playerNames || [];
-    }
-}
-
-export enum GameState {
-    LOBBY = 'lobby',
-    PAUSED = 'paused'
-}
 
 export abstract class Game {
 
     roomCode: string;
 
     host: Host;
+    destroyMethod?: CallableFunction;
 
     abstract gameTypeName: string;
     abstract gameData: GameData;
@@ -43,10 +23,10 @@ export abstract class Game {
      * @param hostUid The User ID assigned to the device the Host is using
      * @param roomCode The 4-letter code that will be used to identify this Game
      */
-    protected constructor(hostSocket: Socket, hostUid: string, roomCode : string) {
+    protected constructor(hostSocket: Socket, hostUid: string, roomCode: string, gameData: GameData) {
 
         this.roomCode = roomCode;
-        this.host = this.createHost(hostSocket, hostUid, this.roomCode);
+        this.host = this.createHost(hostSocket, hostUid, roomCode, gameData);
         console.log('host joined game');
 
         this.host.socket.on('bootPlayer', (nameToBoot) => {
@@ -59,31 +39,32 @@ export abstract class Game {
             }
         });
 
-        this.host.socket.once('startGame', (callback) => {
+        this.host.socket.on('startGame', (callback) => {
+            this.host.socket.removeAllListeners('startGame');
             this.initScores();
             this.start().then(callback);
         });
     }
 
     initScores() {
-        this.gameData.scores = {};
+        this.gameData.public.base.scores = {};
         for (let i = 0; i < this.playerList.names.length; i++) {
-            this.gameData.scores[this.playerList.names[i]] = 0;
-            this.playerList.objs[i].clientData.scores = this.gameData.scores;
+            this.gameData.public.base.scores[this.playerList.names[i]] = 0;
+            this.playerList.objs[i].playerData.public.base.scores = this.gameData.public.base.scores;
         }
     }
 
     // joins this game, creates a Player and returns the Player object
-    join(socket : Socket, name : string, uid : string): Player {
-        let p = this.createPlayer(socket, name, uid);
-        this.playerList.add(name, p);
+    join(playerSocket: Socket, playerUid: string, playerName: string): Player {
+        let p = this.createPlayer(playerSocket, playerUid, this.roomCode, playerName);
+        this.playerList.add(playerName, p);
         this.informHost();
-        console.log("player " + name + " joined game");
+        console.log("player " + playerName + " joined game");
         return p;
     }
 
-    abstract createPlayer(socket: Socket, name: string, uid: string): Player  // abstract
-    abstract createHost(socket: Socket, uid: string, gameId: string): Host // abstract
+    abstract createPlayer(playerSocket: Socket, playerUid: string, roomCode: string, playerName: string,): Player  // abstract
+    abstract createHost(hostSocket: Socket, hostUid: string, roomCode: string, gameData : GameData): Host // abstract
 
     informHost() {
         console.debug(this.gameData);
@@ -96,7 +77,7 @@ export abstract class Game {
         }
     }
 
-    leave(socket : Socket) {
+    leave(socket: Socket) {
         for (let i = 0; i < this.playerList.names.length; i++) {
             if (this.playerList.objs[i].socket == socket) {
                 console.log('removing from gamedata.players: ' + this.playerList.names[i]);
@@ -119,9 +100,9 @@ export abstract class Game {
     // }
 
     // TODO use broadcast or toRoom instead of emitting all
-    hostConnection(destroyTime: number) {
+    hostDisconnected(destroyTime: number) {
         this.playerList.objs.forEach((p) => {
-            p.socket.emit('hostConnection', destroyTime);
+            p.socket.emit('hostDisconnected', destroyTime);
         });
     }
 }

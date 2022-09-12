@@ -1,11 +1,11 @@
 <div class="slide-wrapper">
     <div class="card mx-auto p-3">
-        <form [formGroup]="form" [style.max-height]="sio.playerData?.roomCode? '0' : '20rem'">
+        <form [formGroup]="form" [style.max-height]="sio.playerData?.public?.base?.roomCode? '0' : '20rem'">
             <div class="form-group field">
                 <label for="qName" class="label">What's your name?</label>
                 <div class="control has-icons-right">
                     <input formControlName="qName" id="qName" type="text" class="input form-control"
-                        placeholder="Max 12 characters"
+                        placeholder="Max 12 characters" (input)="freeze = false; this.f.qRoomCode.reset();"
                         [ngClass]="f.qName.errors && f.qName.touched ? 'is-danger' : ''">
                     <span class="icon is-small is-right">
                         <i class="fas" [ngClass]="f.qName.errors ? 'fa-exclamation-triangle' : 'fa-check'"></i>
@@ -35,12 +35,12 @@
             </div>
         </form>
         <div class="my-4">
-            <div *ngIf="sio.playerData?.roomCode || f.qName.valid && f.qRoomCode.valid" class="py-2 join-info has-text-centered is-size-6">
+            <div *ngIf="sio.playerData?.public?.base?.roomCode || f.qName.valid && f.qRoomCode.valid" class="py-2 join-info has-text-centered is-size-6">
                 <i *ngIf="!freeze && trySubmit()" class="text-loading"></i>
-                <div *ngIf="sio.playerData?.roomCode; else joined">
+                <div *ngIf="sio.playerData?.public?.base?.roomCode; else notJoined">
                     <p>joined! <i class="fa fa-check"></i></p>
                 </div>
-                <ng-template #joined>
+                <ng-template #notJoined>
                     <p *ngIf="!joinFailedMessage; else invalid" class="is-danger text-loading">joining</p>
                     <ng-template #invalid>
                         <p>{{joinFailedMessage}}</p>

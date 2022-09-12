@@ -1,0 +1,7 @@
+<div class="background"></div>
+<div class="background"></div>
+<div [@.disabled]="sio.disableAnimations" [@animSlide]="childAnimData(o)">
+  <router-outlet #o="outlet"></router-outlet>
+</div>
+<app-socket-status></app-socket-status>
+<app-disconnect-alert></app-disconnect-alert>

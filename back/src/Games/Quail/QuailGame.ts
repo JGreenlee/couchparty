@@ -1,4 +1,4 @@
-import { Game, GameState } from '../../Game';
+import { Game } from '../../Game';
 import { PlayerList } from '../../PlayerList';
 import { QpaData, QuailGameData, QVote } from './QuailGameData';
 import { QuailHost, QuailPlayer } from "./QuailPlayer";
@@ -14,28 +14,37 @@ export interface QuailGameOptions {
     redHerrings: boolean
 }
 
-export enum QuailGameState {
-    INTRO = 'intro',                // tutorial
-    ANSWERING = 'answering',        // prompts have been sent, waiting for players' answers
-    VOTING = 'voting',              // answers received, voting has begun
-    LEADERBOARD = 'leaderboard'     // viewing scores
-}
+export type QuailGameState =
+    'INTRO' |           // tutorial
+    'ANSWERING' |       // prompts have been sent, waiting for players' answers
+    'VOTING' |          // answers received, voting has begun
+    'LEADERBOARD'       // viewing scores
+;
 
 export class QuailGame extends Game {
 
-    gameTypeName: string = GAME_TYPE_NAME_QUAIL;
+    gameTypeName: string;
     gameOptions: QuailGameOptions;
     gameData: QuailGameData;
 
     playerList: PlayerList<QuailPlayer>;
 
-    constructor(hostSocket : Socket, hostUid : string, roomCode : string, gameOptions: QuailGameOptions) {
-        super(hostSocket, hostUid, roomCode);
-        this.gameOptions = gameOptions;
-        this.gameData = new QuailGameData({
-            roomCode: this.roomCode,
-            gameState: GameState.LOBBY,
+    constructor(hostSocket: Socket, hostUid: string, roomCode: string, gameOptions: QuailGameOptions) {
+        const gd = new QuailGameData({
+            public: {
+                roundNumber: 0,
+                base: {
+                    roomCode: roomCode,
+                    scores: {},
+                    gameState: 'LOBBY',
+                    hostDisconnected: 0
+                }
+            }
         });
+        super(hostSocket, hostUid, roomCode, gd);
+        this.gameData = gd;
+        this.gameOptions = gameOptions;
+        this.gameTypeName = GAME_TYPE_NAME_QUAIL;
         this.playerList = new PlayerList();
         this.gameData.playerNames = this.playerList.names;
     }
@@ -50,9 +59,9 @@ export class QuailGame extends Game {
 
         for (let i = 0; i < this.playerList.names.length; i++) {
             const p = this.playerList.objs[i]
-            p.clientData.qMyVotes = {};
-            p.clientData.qPrompts = [];
-            p.clientData.qPromptAnswers = this.gameData.qPromptAnswers;
+            p.playerData.qMyVotes = {};
+            p.playerData.qPrompts = [];
+            p.playerData.qPromptAnswers = this.gameData.qPromptAnswers;
         }
 
         return new Promise<void>(() => {
@@ -74,7 +83,7 @@ export class QuailGame extends Game {
     }
 
     sendPrompts() {
-        this.gameData.gameState = QuailGameState.ANSWERING;
+        this.gameData.public.base.gameState = 'ANSWERING';
 
         const promptsArr = Object.keys(prompts);
         const numOfPrompts = this.playerList.names.length;
@@ -88,8 +97,8 @@ export class QuailGame extends Game {
             this.assignPrompts(player, i, numOfPrompts, randPrompts)
 
             // what to do when answers come in
-            player.socket.once('qAnswers', (r: { promptId: string; promptAnswer: any; }[], ack) => {
-
+            player.socket.on('qAnswers', (r: { promptId: string; promptAnswer: any; }[], ack) => {
+                player.socket.removeAllListeners('qAnswers');
                 r.forEach((prom) => {
                     this.gameData.qPromptAnswers[prom.promptId] ||= [];
                     this.gameData.qPromptAnswers[prom.promptId].push(
@@ -118,14 +127,14 @@ export class QuailGame extends Game {
         this.gameData.pairings[firstChosenPrompt].push(this.playerList.names[i]);
         this.gameData.pairings[secondChosenPrompt].push(this.playerList.names[i]);
 
-        player.clientData.qPrompts.push(
+        player.playerData.qPrompts.push(
             { promptId: firstChosenPrompt, promptText: prompts[firstChosenPrompt] },
             { promptId: secondChosenPrompt, promptText: prompts[secondChosenPrompt] }
         );
     }
 
     startVoting() {
-        this.gameData.gameState = QuailGameState.VOTING;
+        this.gameData.public.base.gameState = 'VOTING';
 
         // send all players the voting matchups
         for (let i = 0; i < this.playerList.names.length; i++) {
@@ -133,7 +142,8 @@ export class QuailGame extends Game {
             const player = this.playerList.objs[i];
 
             // TODO why does this get called 3x per vote?
-            player.socket.once('qVote', (promptId: string, chosenIndex: number, colorIndex, ack) => {
+            player.socket.on('qVote', (promptId: string, chosenIndex: number, colorIndex, ack) => {
+                player.socket.removeAllListeners('qVote');
 
                 // verify voter eligibility ;)
                 if (this.gameData.pairings[promptId].includes(player.name)) {
@@ -141,7 +151,7 @@ export class QuailGame extends Game {
                     return;
                 }
 
-                player.clientData.qMyVotes[promptId] = chosenIndex;
+                player.playerData.qMyVotes[promptId] = chosenIndex;
                 this.gameData.qPromptAnswers[promptId][chosenIndex].votes ||= [];
 
                 const votes: QVote[] = this.gameData.qPromptAnswers[promptId][chosenIndex].votes;
@@ -149,7 +159,7 @@ export class QuailGame extends Game {
                     votes.push({ playerName: player.name, colorIndex: colorIndex });
                 }
 
-                ack(player.clientData);
+                ack(player.playerData);
                 this.informHost();
 
                 if (!this.gameData.qPromptAnswers[promptId].find((o) => { return o.finished })) {
@@ -157,15 +167,17 @@ export class QuailGame extends Game {
                         // NEXT ROUND
                         this.gameData.qPromptAnswers[promptId].push({ finished: 'voted' });
 
-                        this.host.socket.once('qNextBallot', () => {
+                        this.host.socket.on('qNextBallot', () => {
+
+                            this.host.socket.removeAllListeners('qNextBallot');
                             const len = this.gameData.qPromptAnswers[promptId].length;
                             this.gameData.qPromptAnswers[promptId][len - 1].finished = 'tallied';
 
                             if (this.isAllVotingFinished()) {
                                 this.startVoting();
                             } else {
-                                if (this.gameData.roundNumber < 3) {
-                                    this.gameData.roundNumber += 1;
+                                if (this.gameData.public.roundNumber < 3) {
+                                    this.gameData.public.roundNumber += 1;
                                 }
                                 this.showLeaderboard();
                             }
@@ -175,7 +187,7 @@ export class QuailGame extends Game {
                     }
                 }
             });
-            // player.clientData.qPromptAnswers = this.gameData.qPromptAnswers;
+            // player.playerData.qPromptAnswers = this.gameData.qPromptAnswers;
             player.inform(this.gameData);
         }
         this.informHost();
@@ -201,12 +213,12 @@ export class QuailGame extends Game {
             }
 
             if (votesForFirst > votesForSecond) {
-                this.gameData.scores[firstPlayerName] += 50;
+                this.gameData.public.base.scores[firstPlayerName] += 50;
             } else if (votesForFirst < votesForSecond) {
-                this.gameData.scores[secondPlayerName] += 50;
+                this.gameData.public.base.scores[secondPlayerName] += 50;
             } else {
-                this.gameData.scores[firstPlayerName] += 20;
-                this.gameData.scores[secondPlayerName] += 20;
+                this.gameData.public.base.scores[firstPlayerName] += 20;
+                this.gameData.public.base.scores[secondPlayerName] += 20;
             }
             return true;
         }
@@ -223,9 +235,10 @@ export class QuailGame extends Game {
     }
 
     showLeaderboard() {
-        this.gameData.gameState = QuailGameState.LEADERBOARD;
+        this.gameData.public.base.gameState = 'LEADERBOARD';
 
-        this.host.socket.once('startRound', (callback) => {
+        this.host.socket.on('startRound', (callback) => {
+            this.host.socket.removeAllListeners('startRound');
             this.startRound().then(callback)
         });
 
@@ -233,11 +246,11 @@ export class QuailGame extends Game {
         this.informAllPlayers();
     }
 
-    createPlayer(socket, name, uid): QuailPlayer {
-        return new QuailPlayer(socket, name, uid, this.gameData.roomCode);
+    createPlayer(playerSocket: Socket, playerUid: string, roomCode: string, playerName: string): QuailPlayer {
+        return new QuailPlayer(playerSocket, playerUid, roomCode, this.gameData.public, playerName);
     }
 
-    createHost(hostSocket, uid, gameId): QuailHost {
-        return new QuailHost(hostSocket, uid, gameId, this.gameData);
+    createHost(hostSocket: Socket, hostUid: string, roomCode: string, gameData: QuailGameData): QuailHost {
+        return new QuailHost(hostSocket, hostUid, roomCode, gameData.public);
     }
 }

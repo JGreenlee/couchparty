@@ -1,13 +1,11 @@
-import { Injectable, KeyValueChanges, KeyValueDiffer, KeyValueDiffers, OnChanges } from '@angular/core';
+import { Injectable, KeyValueChanges, KeyValueDiffer, KeyValueDiffers } from '@angular/core';
 import { Router } from '@angular/router';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
-import { GameData } from '../../../../back/src/Game';
+import { GameState } from '../../../../back/src/GameData';
 
-import { QuailGameState } from '../../../../back/src/Games/Quail/QuailGame';
-import { QuailGameData } from '../../../../back/src/Games/Quail/QuailGameData';
-import { QuailPlayerData } from '../../../../back/src/Games/Quail/QuailPlayer';
-import { PlayerData } from '../../../../back/src/Player';
+import type { QuailGameData } from '../../../../back/src/Games/Quail/QuailGameData';
+import type { QuailPlayerData } from '../../../../back/src/Games/Quail/QuailPlayer';
 
 import { getCurrentPromptIndex } from './util';
 
@@ -20,12 +18,16 @@ import { getCurrentPromptIndex } from './util';
 export class SocketioService {
 
   public DEBUG = environment.DEBUG;
+  public disableAnimations = true;
 
   private socket?: Socket;
   playerData?: QuailPlayerData;
   gameData?: QuailGameData;
   uid?: string;
+  onceRegisteredPromise;
   private gdDiffer?: KeyValueDiffer<string, any>;
+  disconnected: boolean = false;
+  disconnectedMessage: string = '';
 
   constructor(private differs: KeyValueDiffers, public router: Router) { }
 
@@ -37,15 +39,30 @@ export class SocketioService {
         this.socket = io(environment.SOCKET_PORT);
       }
     }
-
     return this.socket;
   }
 
-  connect(asHost: boolean) {
+  async onceRegistered(): Promise<boolean> {
+    if (this.isRegistered()) {
+      return true;
+    }
+    return new Promise<boolean>(res => this.onceRegisteredPromise = res);
+  }
+
+  register() {
 
     if (!this.socket) {
       this.getSocket().then((sock: Socket) => {
 
+        // attach listeners
+        sock.on('gameData', (gd: QuailGameData) => {
+          this.updateMyGameData(gd);
+        });
+        sock.on('playerData', (pd: QuailPlayerData) => {
+          this.updateMyPlayerData(pd);
+        });
+
+        // see what we can remember from localStorage
         const rcData = JSON.parse(window.localStorage.getItem('qRoomCode') || '{}');
         let rRoomCode;
         // only remember roomCode if it was from within the last 15 minutes
@@ -59,39 +76,44 @@ export class SocketioService {
           roomCode: rRoomCode || ''
         }
 
-        console.log('remembered', rememberedData);
+        // register
+        console.log('registering with remembered', rememberedData);
+        sock.emit('register', rememberedData, (uid: string, rememberedClientData: QuailGameData | QuailPlayerData) => {
 
-        sock.emit('register', rememberedData, (uid, clientData) => {
-          window.localStorage.setItem('qUserId', uid);
-          this.uid = uid;
+          if (uid) {
+            window.localStorage.setItem('qUserId', uid);
+            this.uid = uid;
 
-          if (clientData) {
-            if (clientData.isGameData) {
-              this.updateMyGameData(clientData);
-            } else if (clientData.isPlayerData) {
-              this.updateMyPlayerData(clientData);
+            if (rememberedClientData) {
+              this.disableAnimations = false;
+              if (rememberedClientData.hasOwnProperty('isGameData')) {
+                this.updateMyGameData(rememberedClientData as QuailGameData);
+              } else if (rememberedClientData.hasOwnProperty('isPlayerData')) {
+                this.updateMyPlayerData(rememberedClientData as QuailPlayerData);
+              } else {
+                console.log('rememberedClientData did not appear to be either gd or pd');
+              }
+            }
+            if (this.onceRegisteredPromise) {
+              this.onceRegisteredPromise(true);
             }
           } else {
-            this.router.navigate([asHost ? '/' : '/play']);
+            alert('It looks like you are already connected in another tab. If this is not the case, clear your cookies and try again.');
           }
         });
-
-        if (asHost) {
-          sock.on('gameData', (gd: QuailGameData) => {
-            this.updateMyGameData(gd);
-          });
-        } else {
-          sock.on('playerData', (pd: QuailPlayerData) => {
-            this.updateMyPlayerData(pd);
-          });
-        }
+        sock.on("reconnect", () => {
+          this.disconnected = false;
+        });
+        sock.on("disconnect", () => {
+          this.disconnected = true;
+        });
       });
     }
   }
 
-
   isConnected(): boolean { return this.socket != undefined && this.socket.connected; }
-  isRegistered(): boolean { return (this.gameData || this.playerData) != null; }
+  isRegistered(): boolean { return this.uid != undefined }
+  isJoined(): boolean { return (this.gameData || this.playerData) != null; }
 
   updateMyGameData(gd: QuailGameData) {
     Promise.resolve(null).then(() => {
@@ -101,20 +123,27 @@ export class SocketioService {
         // if (!this.gdDiffer) {
         //   this.gdDiffer = this.differs.find(this.gameData).create();
         // }
-        if (gd.roomCode) {
-          const rcData = { roomCode: gd.roomCode, timestamp: new Date().getTime() }
+        if (gd.public.base.roomCode) {
+          const rcData = { roomCode: gd.public.base.roomCode, timestamp: new Date().getTime() }
           window.localStorage.setItem('qRoomCode', JSON.stringify(rcData));
         }
-        switch (gd.gameState) {
-          case QuailGameState.ANSWERING:
+        switch (gd.public.base.gameState) {
+          case 'LOBBY':
+            this.router.navigate(['/lobby']);
+            break;
+          case 'ANSWERING':
             this.router.navigate(['/answering']);
             break;
-          case QuailGameState.VOTING:
+          case 'VOTING':
             const i = getCurrentPromptIndex(gd.qPromptAnswers, Object.keys(gd.qPromptAnswers));
             this.router.navigate(['/voting/' + i]);
             break;
-          case QuailGameState.LEADERBOARD:
+          case 'LEADERBOARD':
             this.router.navigate(['/scores']);
+            break;
+          case 'TERMINATED':
+            delete this.gameData;
+            this.router.navigate(['/']);
             break;
         }
       }
@@ -126,24 +155,35 @@ export class SocketioService {
       console.debug('updateMyPlayerData', pd);
       if (pd) {
         this.playerData = pd;
-        if (pd.roomCode) {
-          const rcData = { roomCode: pd.roomCode, timestamp: new Date().getTime() }
+        if (pd.public.base.roomCode) {
+          const rcData = { roomCode: pd.public.base.roomCode, timestamp: new Date().getTime() }
           window.localStorage.setItem('qRoomCode', JSON.stringify(rcData));
         }
-        switch (pd.gameState) {
-          case QuailGameState.ANSWERING:
+        switch (pd.public.base.gameState) {
+          case 'LOBBY':
+            this.router.navigate(['/play']);
+            break;
+          case 'ANSWERING':
             this.router.navigate(['/quiz']);
             break;
-          case QuailGameState.VOTING:
+          case 'VOTING':
             const i = getCurrentPromptIndex(pd.qPromptAnswers!, Object.keys(pd.qPromptAnswers!));
             this.router.navigate(['/ballot/' + i]);
             break;
-          case QuailGameState.LEADERBOARD:
+          case 'LEADERBOARD':
             this.router.navigate(['/rank']);
+            break;
+          case 'TERMINATED':
+            delete this.playerData;
+            this.router.navigate(['/play']);
             break;
         }
       }
     });
+  }
+
+  clientData() {
+    return this.playerData || this.gameData;
   }
 
   emit(e: string, ...args: any[]) {

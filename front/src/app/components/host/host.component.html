@@ -1,5 +1,22 @@
 <router-outlet></router-outlet>
 
-<app-socket-status></app-socket-status>
 <app-settings-panel></app-settings-panel>
 <app-orientation-notice></app-orientation-notice>
+
+<div class="end-game modal" [ngClass]="askEndGame ? 'is-flex' : ''">
+    <div class="modal-background"></div>
+    <div class="modal-content p-5">
+        <div class="card mx-auto px-3 pb-3">
+            <div class="card-content p-2 has-text-centered">
+                <p class="mb-5">Do you want to end the game?</p>
+                <button class="mx-1" (click)="askEndGame='yes'">YES</button>
+                <button class="mx-1" (click)="askEndGame='';">NO</button>
+            </div>
+            <div *ngIf="askEndGame=='yes'" class="mt-3 card-content p-2 has-text-centered">
+                <p class="mb-5">Are you sure? This will permanently delete the game and all players will lose their progress.</p>
+                <button class="mx-1" (click)="endGame()">YES, DELETE</button>
+                <button class="mx-1" (click)="askEndGame='';">NO, KEEP PLAYING</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,33 +1,40 @@
 <div class="slide-wrapper">
-    <div class="voting mx-auto p-3 has-text-centered columns w-100 is-mobile">
-        <div *ngFor="let o of (promptIdOnBallot != undefined ? sio.gameData?.qPromptAnswers?.[promptIdOnBallot] : [])"
-            class="qAnswer-entry">
-            <div *ngIf="o.answer" class="qAnswer-card">
-                <div class="column card">
-                    <div class="card-content px-1 pt-1 pb-3">
-                        <div class="title is-size-5 has-text-weight-medium prompt-title"
-                            [ngClass]="o.promptText || 'text-loading'">
-                            <i>{{o.promptText || 'loading'}}</i>
-                        </div>
-                        <div class="title is-size-3 has-text-weight-bold">
-                            <p>{{'❝'+o.answer+'❞'}}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="votes is-flex">
-                    <div *ngFor="let v of o.votes">
-                        <span class="tag vote" *oneTime [ngClass]="colorClasses[v.colorIndex]">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                        </span>
-                    </div>
-                </div>
-                <div *ngIf="promptIsVoted()" class="voting-recap">
+    <div class="voting mx-auto p-3 has-text-centered w-100" [style.--firstColor]="">
+        <div *ngIf="sio.gameData?.qPromptAnswers?.[promptIdOnBallot()][0].promptText"
+            class="card prompt-title color-shadows" [ngClass]="twoRandColorClasses + ' ' + getAwaitingStatus('started', 1000, 'card0')">
+            <div class="is-size-5 has-text-weight-medium">
+                <i>{{sio.gameData?.qPromptAnswers?.[promptIdOnBallot()][0].promptText || 'loading'}}</i>
+            </div>
+        </div>
+        <div class="columns is-mobile is-justify-content-center">
+            <div *ngFor="let o of (promptIdOnBallot() != undefined ? sio.gameData?.qPromptAnswers?.[promptIdOnBallot()] : []); index as i"
+                class="qAnswer-entry" [ngClass]="getAwaitingStatus('card'+i, 2000, 'card'+(i+1))">
+                <div *ngIf="o.answer" class="qAnswer-card column">
                     <div class="card">
-                        <p>
-                            votes for {{o.player}}
-                        </p>
-                        <p *ngFor="let v of o.votes">
-                            {{v.playerName}}
+                        <div class="card-content px-1 py-5">
+                            <div class="title is-size-3 has-text-weight-bold">
+                                <p>{{'❝'+o.answer+'❞'}}</p>
+                            </div>
+                        </div>
+                        <div class="culprit" [ngClass]="getAwaitingStatus('culprit', 0, '')">
+                            <p>
+                                {{promptIsVoted() ? '- '+o.player: ''}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="votes is-flex">
+                        <div *ngFor="let v of o.votes">
+                            <span class="tag vote" *oneTime [ngClass]="colorClasses[v.colorIndex]">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="voting-recap mt-4 is-flex is-flex-wrap-wrap is-justify-content-center"
+                        [ngClass]="getAwaitingStatus('promptVoted', 200, 'culprit')">
+                        <p *ngFor="let v of o.votes" [ngClass]="'color-'+(v.colorIndex + 1)">
+                            <span class="tag" [ngClass]="colorClasses[v.colorIndex]">
+                                {{v.playerName}}
+                            </span>
                         </p>
                     </div>
                 </div>
