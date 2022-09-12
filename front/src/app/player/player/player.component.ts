@@ -2,7 +2,7 @@ import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, OnInit, Vi
 import { Meta } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { SocketioService } from 'src/app/services/socketio.service';
-import { QuailGameState } from '../../../../../back/src/Games/Quail/QuailGame';
+import * as util from '../../services/util';
 
 @Component({
   selector: 'app-player',
@@ -10,7 +10,7 @@ import { QuailGameState } from '../../../../../back/src/Games/Quail/QuailGame';
   styleUrls: ['./player.component.scss'],
 })
 
-export class PlayerComponent implements OnInit, DoCheck {
+export class PlayerComponent implements OnInit, DoCheck, AfterViewInit {
 
   @ViewChild('bootedDialog')
   bootedDialog!: ElementRef;
@@ -19,42 +19,63 @@ export class PlayerComponent implements OnInit, DoCheck {
   constructor(public sio: SocketioService, public metaService: Meta, public router: Router) { }
 
   ngOnInit() {
-    this.sio.connect(false); // connect not asHost
     this.sio.getSocket().then((sock) => {
       sock.on('sioPerform', (cmd: string, ...params) => {
         this[cmd](params);
         this.currentSlideComponent[cmd](params);
       });
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.calculateScale();
+    this.sio.onceRegistered().then(()=>{
+      if (!this.sio.playerData) {
+        this.sio.disableAnimations = false;
+        this.router.navigate(['/play']);
+      }
+    });
   }
 
   @HostListener("window:resize", ['event'])
-  calculateScale() {
-    const targetHeight = 500;
-    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-    const scaleFactor = vh / targetHeight;
-    const isBigEnough = vh > targetHeight || scaleFactor >= 1
-    document.documentElement.style.fontSize = isBigEnough ? '' : (118 * scaleFactor) + '%';
+  ngAfterViewInit(): void {
+    util.calculateScale(400, 1200, 600, 1000);
   }
 
   updateDarkMode(e) {
     if (e.target.checked) {
       document.documentElement.classList.remove('theme--default');
       document.documentElement.classList.add('theme--dark');
-      localStorage.setItem('quailTheme', 'dark');
+      localStorage.setItem('qTheme', 'dark');
     } else {
       document.documentElement.classList.remove('theme--dark');
       document.documentElement.classList.add('theme--default');
-      localStorage.setItem('quailTheme', 'default');
+      localStorage.setItem('qTheme', 'default');
     }
   }
 
   onBooted(o) {
     this.bootedDialog.nativeElement.style.display = 'flex';
+  }
+
+  getConnStatus() {
+    let r = '';
+
+    if (this.sio.gameData?.public?.base?.roomCode || this.sio.playerData?.public?.base?.roomCode) {
+      r += 'Connected to game ' + (this.sio.gameData?.public?.base?.roomCode || this.sio.playerData?.public?.base?.roomCode) + ' ✅';
+    } else if (this.sio.isConnected()) {
+      r += 'Connected, not joined in any game yet... ⌛';
+    } else {
+      r += 'Not connected ❌'
+    }
+
+    r += "\n\n";
+
+    if (this.sio.uid) {
+      r += 'UID: ' + this.sio.uid + '\xa0✅';
+    } else {
+      r += 'UID not registered ❌'
+    }
+
+    // latency?
+
+    return r;
   }
 
   ngDoCheck(): void {

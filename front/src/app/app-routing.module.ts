@@ -19,23 +19,25 @@ import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from 
 @NgModule({
   imports: [RouterModule.forRoot([
     {
+      path: '', component: SplashComponent, data: { anim: 10 }
+    },
+    {
       path: '', component: HostComponent, children: [
-        { path: '', component: SplashComponent, data: { anim: '1' } },
-        { path: 'lobby', component: LobbyComponent, data: { anim: '2' } },
-        { path: 'answering', component: AnsweringComponent, data: { anim: '3' } },
-        { path: 'voting', component: VotingComponent, data: { anim: 'vt' } },
-        { path: 'voting/:ballotIndex', component: VotingComponent, data: { anim: 'vt' } },
-        { path: 'scores', component: LeaderboardComponent, data: { anim: 'ss' } },
+        { path: 'lobby', component: LobbyComponent, data: { anim: 50 } },
+        { path: 'answering', component: AnsweringComponent, data: { anim: 55 } },
+        { path: 'voting', component: VotingComponent, data: { anim: 60 } },
+        { path: 'voting/:ballotIndex', component: VotingComponent, data: { anim: 61 } },
+        { path: 'scores', component: LeaderboardComponent, data: { anim: 65 } },
       ]
     },
     {
       path: '', component: PlayerComponent, children: [
-        { path: 'play', component: JoinComponent, data: { anim: 'py' } },
+        { path: 'play', component: JoinComponent, data: { anim: 5 } },
         { path: 'join', redirectTo: '/play', pathMatch: 'full' },
-        { path: 'quiz', component: QuizComponent, data: { anim: 'qz' } },
-        { path: 'ballot', component: BallotComponent, data: { anim: 'bt' } },
-        { path: 'ballot/:ballotIndex', component: BallotComponent, data: { anim: 'bt' } },
-        { path: 'rank', component: RankComponent, data: { anim: 'rk' } },
+        { path: 'quiz', component: QuizComponent, data: { anim: 15 } },
+        { path: 'ballot', component: BallotComponent, data: { anim: 20 } },
+        { path: 'ballot/:ballotIndex', component: BallotComponent, data: { anim: 25 } },
+        { path: 'rank', component: RankComponent, data: { anim: 30 } },
       ]
     },
     { path: "**", component: NotFoundComponent }
@@ -74,7 +76,7 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
     
     return future.component == AppComponent
-      || future.component == HostComponent
-      || future.component == PlayerComponent;
+      || curr.component == HostComponent && future.component == HostComponent
+      || curr.component == PlayerComponent && future.component == PlayerComponent;
   }
 }

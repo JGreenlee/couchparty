@@ -1,43 +1,21 @@
-<div class="background"></div>
-<div class="background"></div>
+<router-outlet></router-outlet>
 
-<div class="routerContainer">
-    <router-outlet></router-outlet>
-</div>
+<app-settings-panel></app-settings-panel>
+<app-orientation-notice></app-orientation-notice>
 
-<app-socket-status></app-socket-status>
-
-<div id="settings">
-    <div class="settings-text text-600">SETTINGS</div>
-    <div class="content">
-        <label for="switch-fullscreen" class="switch">
-            <input #switchFullscreen id="switch-fullscreen" type="checkbox" name="switch-fullscreen"
-                [checked]="isFullscreen" (click)="applyFullscreenStatus($event);">
-            <span class="slider"></span>
-            <span class="label-text px-2">» Fullscreen ↗️</span>
-        </label>
-        <label for="switch-darkmode" class="switch">
-            <input #switchDarkMode id="switch-darkmode" type="checkbox" name="switch-darkmode"
-                [checked]="isDarkMode()" (click)="applyDarkModeStatus($event);">
-            <span class="slider"></span>
-            <span class="label-text px-2">» Dark mode 🌙</span>
-        </label>
-    </div>
-</div>
-
-<div id="orientation-warning" class="q-dialog modal">
+<div class="end-game modal" [ngClass]="askEndGame ? 'is-flex' : ''">
     <div class="modal-background"></div>
     <div class="modal-content p-5">
         <div class="card mx-auto px-3 pb-3">
-            <div class="card-content">
-                <h1 class="title is-size-1 text-900 has-text-centered">
-                    <i class="fa fa-undo fa-flip-horizontal"></i>
-                </h1>
-                <p>
-                    Heads up! You can only host games in landscape mode 🙆
-                    If you're on a phone, you'll want to cast to a bigger screen so everyone can see 👀
-                </p>
-                <p class="mt-2 has-text-right">If you're trying to join an existing lobby, go to <a href="/play">/play</a> 😉</p>
+            <div class="card-content p-2 has-text-centered">
+                <p class="mb-5">Do you want to end the game?</p>
+                <button class="mx-1" (click)="askEndGame='yes'">YES</button>
+                <button class="mx-1" (click)="askEndGame='';">NO</button>
+            </div>
+            <div *ngIf="askEndGame=='yes'" class="mt-3 card-content p-2 has-text-centered">
+                <p class="mb-5">Are you sure? This will permanently delete the game and all players will lose their progress.</p>
+                <button class="mx-1" (click)="endGame()">YES, DELETE</button>
+                <button class="mx-1" (click)="askEndGame='';">NO, KEEP PLAYING</button>
             </div>
         </div>
     </div>

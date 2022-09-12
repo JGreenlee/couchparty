@@ -1,0 +1,16 @@
+<div *ngIf="sio.disconnected || sio.playerData?.public?.base?.hostDisconnected" class="modal is-flex">
+    <div class="modal-background"></div>
+    <div class="modal-content p-5">
+        <div class="card mx-auto px-3">
+            <div class="card-content has-text-centered">
+                <p *ngIf="sio.playerData?.public?.base?.hostDisconnected">
+                    The hosting device has disconnected. If it does not reconnect within
+                    {{secondsLeft}} seconds, this game will end.
+                </p>
+                <p style="white-space: pre" *ngIf="sio.disconnected">
+                    {{sio.disconnectedMessage}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

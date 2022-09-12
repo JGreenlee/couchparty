@@ -11,8 +11,9 @@ a {
 input,
 select {
   background-color: rgba(var(--text-hicon-rgb), .06) !important;
-  border-color: rgba(var(--text-rgb), .04);
-  color: var(--text);
+  border-width: 0.15rem !important;
+  border-color: rgba(var(--text-rgb), .1) !important;
+  color: var(--text) !important;
   box-shadow: inset 0 0.0625em 0.125em rgb(10 10 10 / 5%) !important;
 }
 
@@ -21,37 +22,45 @@ select:focus {
   border-color: rgba(var(--text-rgb), .3) !important;
 }
 
+.input ~ .icon {
+  color:rgba(var(--text-rgb), .5) !important;
+}
+
+.input:focus ~ .icon {
+  color:rgba(var(--text-rgb), .8) !important;
+}
+
 input.is-danger {
   border-color: #f14668;
 }
 
-.is-primary {
-  background-color: var(--primary) !important;
-  color: #fff !important;
+#couch .is-primary {
+  background-color: var(--primary);
+  color: #fff;
 }
 
-.is-secondary {
-  background-color: var(--secondary) !important;
-  color: #fff !important;
+#couch .is-secondary {
+  background-color: var(--secondary);
+  color: #fff;
 }
 
-.is-tertiary {
-  background-color: var(--tertiary) !important;
-  color: #fff !important;
+#couch .is-tertiary {
+  background-color: var(--tertiary);
+  color: #fff;
 }
 
-.is-quaternary {
-  background-color: var(--quaternary) !important;
-  color: #fff !important;
+#couch .is-quaternary {
+  background-color: var(--quaternary);
+  color: #fff;
 }
 
-.is-neutral {
-  background-color: var(--bg) !important;
-  color: var(--text) !important;
+#couch .is-neutral {
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 .card {
-  background-color: var(--card-bg) !important;
+  background-color: var(--card-bg);
 }
 
 .label,

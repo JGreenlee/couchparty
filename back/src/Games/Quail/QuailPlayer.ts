@@ -1,14 +1,14 @@
-import { Host, Player, PlayerData } from "../../Player";
-import { GameState } from "../../Game";
-import { QpaData, QuailGameData } from "./QuailGameData";
-import { Socket } from "socket.io";
+import { Host, Player, PlayerData } from '../../Player';
+import { QpaData, QuailPublicGameData } from './QuailGameData';
+import { Socket } from 'socket.io';
+import { PublicGameData } from '../../GameData';
 
 export class QuailPlayerData extends PlayerData {
 
     qPrompts: {
         promptId: string;
         promptText: string;
-    }[];
+    }[] = [];
 
     qPromptAnswers?: {
         promptId?: QpaData[];
@@ -16,40 +16,37 @@ export class QuailPlayerData extends PlayerData {
 
     qMyVotes: {
         promptId?: number;
-    }
+    } = {}
+
+    public: QuailPublicGameData
 
     constructor(pd: Partial<QuailPlayerData>) {
         super(pd);
-        this.qPrompts = [];
-        this.qMyVotes = {};
-        // qpa is synced with gamedata.qpa, not defined here
+        this.public = pd.public!;
     }
 }
 
 export class QuailPlayer extends Player {
 
-    clientData: QuailPlayerData;
+    playerData: QuailPlayerData;
 
-    constructor(socket: any, name: string, uid: string, gameId: string) {
-        super(socket, name, uid, gameId);
-        this.clientData = new QuailPlayerData({
+    constructor(socket: any, uid: string, roomCode: string, publicGameData : QuailPublicGameData, name : string) {
+        super(socket, uid, roomCode, name);
+        this.playerData = new QuailPlayerData({
             myName: name,
-            roomCode: gameId,
-            gameState: GameState.LOBBY,
-            qPrompts: []
+            public: publicGameData
         });
     }
 }
 
 export class QuailHost extends Host {
 
-    clientData: QuailPlayerData;
+    playerData : QuailPlayerData;
 
-    constructor(socket: Socket, uid: string, gameId: string, gd: QuailGameData) {
-        super(socket, uid, gameId);
-        this.clientData = new QuailPlayerData({
-            roomCode: gameId,
-            gameState: GameState.LOBBY,
+    constructor(socket: Socket, uid: string, roomCode: string, publicGameData: QuailPublicGameData) {
+        super(socket, uid, roomCode);
+        this.playerData = new QuailPlayerData({
+            public: publicGameData
         });
     }
 }

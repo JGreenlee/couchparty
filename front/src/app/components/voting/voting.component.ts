@@ -8,34 +8,51 @@ import * as util from 'src/app/services/util';
   templateUrl: './voting.component.html',
   styleUrls: ['./voting.component.scss']
 })
-export class VotingComponent implements OnInit {
+export class VotingComponent implements AfterViewInit {
 
+  math = Math;
   values = Object.values;
-  promptIdOnBallot?: string;
+
+  started?: boolean;
   lastNumGenerated?: number;
   colorClasses: string[];
+  twoRandColorClasses: string;
   didReqNextBallot: boolean = false;
 
   constructor(public sio: SocketioService, private router: Router, private route: ActivatedRoute) {
     this.colorClasses = ['is-primary', 'is-secondary', 'is-tertiary', 'is-quaternary'];
+    this.twoRandColorClasses = [...this.colorClasses].sort(() => 0.5 - Math.random()).splice(0, 2).join(' ');
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.started = true;
+    }, 300)
+  }
+
+  promptIdOnBallot(): string {
     const param: string | null = this.route.snapshot.paramMap.get('ballotIndex');
 
     if (this.sio.gameData?.qPromptAnswers && param) {
-      this.promptIdOnBallot = util.findBallotIndex(this.sio.gameData?.qPromptAnswers, param);
+      return util.findBallotIndex(this.sio.gameData?.qPromptAnswers, param) || '';
+    } else {
+      return '';
     }
   }
 
   promptIsVoted() {
-    const piv = util.promptIsVoted(this.sio.gameData?.qPromptAnswers, this.promptIdOnBallot || '');
+    const piv = util.promptIsVoted(this.sio.gameData?.qPromptAnswers, this.promptIdOnBallot() || '');
     if (piv) {
       if (!this.didReqNextBallot) {
         this.didReqNextBallot = true;
         setTimeout(() => {
-          this.sio.emit('qNextBallot');
-        }, 1000)
+          this['promptVoted'] = true;
+        }, 200);
+        setTimeout(() => {
+          this.sio.emitTimeout(3000, 'qNextBallot', (err)=>{
+            console.error(err);
+          });
+        }, 8000);
       }
       return true;
     } else {
@@ -57,5 +74,35 @@ export class VotingComponent implements OnInit {
       case 3: return 'is-quaternary';
     }
     return;
+  }
+
+  getAwaitingStatus(triggerEvent: string, delay: number, newEvent: string) {
+    if (this[newEvent]) {
+      return '';
+    }
+    if (this[triggerEvent]) {
+      setTimeout(() => {
+        this[newEvent] = true;
+      }, delay);
+      return '';
+    }
+    return 'awaiting'
+  }
+
+  doTransition(triggerEvent: string, delay: number, newEvent: string) {
+    if (this[newEvent]) {
+      return '';
+    }
+    const d = Date.now();
+    console.log('check ' + triggerEvent);
+    console.log("now", d);
+    console.log(this[triggerEvent]);
+
+    if (this[triggerEvent] && d > this[triggerEvent] + delay) {
+      this[newEvent] = d;
+      return '';
+    } else {
+      return 'awaiting'
+    }
   }
 }

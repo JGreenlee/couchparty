@@ -1,0 +1,10 @@
+node_modules/
+front/node_modules/
+back/node_modules/
+
+dist/
+front/dist/
+back/dist/
+
+.git
+.cache
