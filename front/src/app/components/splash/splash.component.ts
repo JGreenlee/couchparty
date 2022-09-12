@@ -20,7 +20,7 @@ export class SplashComponent implements OnInit {
 
   @HostListener("window:resize", ['event'])
   setScale() {
-    util.calculateScale(400, 1400, 600, 1000);
+    util.calculateScale(550, 1400, 600, 1000);
   }
 
 }

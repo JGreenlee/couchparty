@@ -1,10 +1,10 @@
 {
   "name": "couchparty",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "increment-version": "npm version patch",
+    "bump": "npm version patch",
     "front-update": "cd front && npm i && npm update",
     "back-update": "cd back && npm i && npm update",
     "update": "npm run front-update && npm run back-update",
@@ -14,7 +14,6 @@
     "start": "cd back && npm run start",
     "dev": "cd back && npm run dev"
   },
-  "pre-commit": [ "increment-version" ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JGreenlee/couchparty.git"
@@ -24,8 +23,5 @@
   "bugs": {
     "url": "https://github.com/JGreenlee/couchparty/issues"
   },
-  "homepage": "https://github.com/JGreenlee/couchparty#readme",
-  "devDependencies": {
-    "pre-commit": "^1.2.2"
-  }
+  "homepage": "https://github.com/JGreenlee/couchparty#readme"
 }
