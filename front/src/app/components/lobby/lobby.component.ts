@@ -10,12 +10,29 @@ import { SocketioService } from 'src/app/services/socketio.service';
 export class LobbyComponent implements AfterViewInit {
 
   numPlayers: number = 0;
+  hostName: string = window.location.hostname;
 
-  constructor(private router: Router, public sio : SocketioService) { }
+  constructor(private router: Router, public sio: SocketioService) { }
 
   ngAfterViewInit(): void {
+    this.sio.onceRegistered().then(() => {
+      this.createGame();
+    });
+  }
+
+  createGame() {
     this.sio.getSocket().then((sock) => {
-      sock.emit('createGame', 'quail', null, this.sio.updateMyGameData);
+      // if game not already created
+      console.log(this.sio.gameData);
+
+      if (!this.sio.gameData?.public?.base?.roomCode) {
+        // request 'createGame' to server
+        sock.timeout(5000).emit('createGame', this.sio.uid, null, (err) => {
+          if (err) {
+            console.log('createGame failed', err);
+          }
+        });
+      }
     });
   }
 
@@ -23,7 +40,7 @@ export class LobbyComponent implements AfterViewInit {
     this.router.navigate(['/answering']);
   }
 
-  bootPlayer(name : string) {
+  bootPlayer(name: string) {
     this.sio.emit('bootPlayer', name);
   }
 
@@ -38,7 +55,7 @@ export class LobbyComponent implements AfterViewInit {
 
   debug() {
     if (this.sio.DEBUG) {
-      setTimeout(()=>{
+      setTimeout(() => {
         this.startGame();
       }, 500);
     }

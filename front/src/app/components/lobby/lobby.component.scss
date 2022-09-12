@@ -19,12 +19,14 @@
     vertical-align: middle;
     transform: translateY(-.3rem);
     margin-left: 0.7rem !important;
+    min-width: 4.5rem;
 }
 
 .start-btn {
     &[disabled] {
         cursor: not-allowed;
         filter: blur(.25rem) contrast(50%);
+
         // background-color: #ddd;
         &:hover {
             filter: blur(.1rem) contrast(60%);
@@ -32,16 +34,22 @@
             animation-iteration-count: 1;
         }
     }
-    transition: all .3s;
+
+    &:not([disabled]):hover {
+        transform: scale(1.2);
+    }
+
+    transition: filter .3s, transform .1s
 }
 
-.auto-grid5 {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+.entrant-names {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1rem 2rem;
     gap: .5rem;
 }
 
-.auto-grid5:empty:after {
+.entrant-names:empty:after {
     font-size: 1rem;
     min-width: 8rem;
     max-width: 12rem;
@@ -49,21 +57,31 @@
     white-space: nowrap;
 }
 
-.auto-grid5>div:nth-child(3n-2) {
+.entrant-names>div:nth-child(3n-2) {
     background-color: var(--primary);
 }
 
-.auto-grid5>div:nth-child(3n-1) {
+.entrant-names>div:nth-child(3n-1) {
     background-color: var(--secondary);
 }
 
-.auto-grid5>div:nth-child(3n) {
+.entrant-names>div:nth-child(3n) {
     background-color: var(--tertiary);
 }
 
-.auto-grid5>div {
+@keyframes flexGrow {
+    0% {
+        flex-grow: 0.00001;
+    }
+
+    100% {
+        flex-grow: 1;
+    }
+}
+
+.entrant-names>div {
     color: #eee;
-    min-width: 8rem;
+    min-width: calc(max(8rem, 12vw));
     max-width: 12rem;
     position: relative;
     text-align: center;
@@ -72,34 +90,30 @@
     font-weight: 600;
     box-shadow: 0 -.5rem rgba(0, 0, 0, .1) inset;
     cursor: auto;
+    animation: .2s flexGrow forwards;
+    flex-grow: 1;
 }
 
-.auto-grid5>div:active {
+.entrant-names>div:active {
     pointer-events: none;
 }
 
-.auto-grid5>div:hover,
-#lobby-list .auto-grid5>div:active,
-#lobby-list .auto-grid5>div:focus,
-#lobby-list .auto-grid5>div:not(:hover):active {
-    background-color: desaturate($primary--light, 100%);
+.entrant-names>div:hover,
+.entrant-names>div:active,
+.entrant-names>div:focus {
+    background-color: #111;
     transition: background-color .2s;
-    animation: shake 0.65s;
-    animation-iteration-count: infinite;
+    animation: .2s flexGrow forwards, shake 0.65s infinite;
 }
 
-.auto-grid5>div:hover:after {
+.entrant-names>div:hover:after {
     position: absolute;
     line-height: 1rem;
     right: .5rem;
     font-family: "FontAwesome";
     font-weight: 400;
     content: "\f057";
-    color: #f33;
+    color: rgba(255 30 50 / 80%);
     pointer-events: all;
     cursor: pointer;
-}
-
-.auto-grid5>div:hover:after:hover {
-    color: #f00;
 }

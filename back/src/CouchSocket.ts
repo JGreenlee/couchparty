@@ -1,6 +1,8 @@
 import { Server } from 'socket.io';
-import { QuailGame, QuailGameOptions } from "./Games/Quail/QuailGame";
-import { Game, GameState } from "./Game";
+import { QuailGame } from "./Games/Quail/QuailGame";
+import { Game } from "./Game";
+import { Player } from './Player';
+import * as util from './util/util';
 
 export class CouchSocket {
 
@@ -23,87 +25,132 @@ export class CouchSocket {
                     if (disconnG && disconnG.host.socket == socket) {
                         console.log(socket.id + ' was host, destroying game in 3 min');
                         const threeMins = 180000;
-                        this.activeGames[pubId].hostConnection(new Date().getMilliseconds() + threeMins);
-                        // destroy game after 3 minutes if host does not reconnect
-                        setTimeout(() => {
-                            if (socket.disconnected) {
-                                delete this.activeGames[pubId];
-                                console.log('deleted game ' + pubId);
+                        disconnG.gameData.public.base.hostDisconnected = Date.now() + threeMins;
+                        if (!disconnG.destroyMethod) {
+                            disconnG.destroyMethod = () => {
+                                if (!disconnG.host.socket || disconnG.host.socket == socket) {
+                                    if (this.activeGames[pubId]) {
+                                        disconnG.gameData.public.base.gameState = 'TERMINATED';
+                                        disconnG.informAllPlayers();
+                                        delete this.activeGames[pubId];
+                                        console.log('deleted game ' + pubId);
+                                    } else {
+                                        console.log('game ' + pubId + ' was already deleted');
+                                    }
+                                }
                             }
-                        }, threeMins);
+                            // destroy game after 3 minutes if host does not have a new socket by then
+                            setTimeout(disconnG.destroyMethod, threeMins)
+                        }
+                        disconnG.informAllPlayers();
                     }
                 }
 
-                if (g && g.gameData.gameState == GameState.LOBBY) {
+                if (g && g.gameData.public.base.gameState == 'LOBBY') {
                     g.leave(socket);
                 } else {
                     console.log('lost connection to ' + socket.id);
                 }
             });
 
-            socket.on('register', (storedUID, ackRegister) => {
-                console.log('registering');
+            socket.on('register', (rd, ackRegister) => {
+                console.log('registering, rd=', rd);
 
-                if (storedUID) {
-                    ackRegister(storedUID);
+                if (rd && rd['uid']) {
+                    if (rd['roomCode']) {
+                        const g = this.activeGames[rd['roomCode']];
+                        if (g) {
+                            let matchedPlayer: Player | undefined;
+                            let matchedIsHost: boolean = false;
+                            if (g.host.uid == rd['uid']) {
+                                matchedPlayer = g.host;
+                                matchedIsHost = true;
+                            } else {
+                                matchedPlayer = g.playerList.objs.find(p => { return p.uid == rd['uid'] });
+                            }
 
-                    // TODO remind logic
-                    // console.log('remembered client, storedUID = ' + storedUID);
-                    // // when found client who reconnected, let's get em back on track
-                    // // REMIND LOGIC
-                    // let client: Player | null;
-                    // const isHost = storedUID == this.host.UID;
-                    // if (isHost) {
-                    //     client = this.host;
-                    //     this.hostConnection(0); // 0 indicates reconnected, not disconnected
-                    // } else {
-                    //     client = this.getPlayerWithUID(storedUID);
-                    // }
-                    // if (client) {
-                    //     console.log('remembered client is ' + client.name);
-                    //     // when client recognized, remind them
-                    //     client.socket = socket;
-                    //     client.clientData.gameState = this.gameData.gameState;
-                    //     ackRegister(storedUID, client.clientData);
-                    // } else {
-                    //     console.log('player with UID ' + storedUID +" not found");
-                    // }
+                            if (matchedPlayer) {
+                                if (!matchedPlayer.socket.connected) {
+                                    console.log('found player ' + matchedPlayer.name + ', ' + (matchedIsHost ? 'is host' : 'is not host'));
+                                    console.log('reminding ' + matchedPlayer.name + ' who returned to game ' + g.roomCode);
+                                    matchedPlayer.applyNewSocket(socket).then(() => {
+                                        if (matchedIsHost) {
+                                            g.destroyMethod = undefined;
+                                            g.gameData.public.base.hostDisconnected = 0;
+                                            g.informAllPlayers();
+                                            ackRegister(rd['uid'], g.gameData);
+                                        } else {
+                                            ackRegister(rd['uid'], matchedPlayer?.playerData);
+                                        }
+                                        socket['uid'] = rd['uid'];
+                                    });
+                                    return;
+                                } else {
+                                    ackRegister(false, 'duplicate');
+                                    return;
+                                }
+                            }
+                            console.log('found game but not did not remind player');
+                        }
+                    }
+                    console.log('uid remembered as ' + rd['uid'] + ' but not in any active game.', 'roomcode was', rd.roomCode);
+                    socket['uid'] = rd['uid'];
+                    ackRegister(rd['uid']);
                 } else {
-                    console.log('making new uid');
-                    const uid = Math.random().toString(36).substring(3, 16) + new Date().getMilliseconds();
-                    // TODO check UID is not already taken
-                    ackRegister(uid);
+                    socket['uid'] = rd['uid'];
+                    ackRegister(util.generateUid());
                 }
             });
 
-            socket.on('createGame', (gameType: string, gameOptions: QuailGameOptions) => {
-                socket.once('terminateGame', (termCallback: CallableFunction) => {
+            socket.on('createGame', (hostUid, gameOptions) => {
+
+                if (socket.roomCode && this.activeGames[socket.roomCode]) {
+                    console.log('you already have a game');
+                    this.activeGames[socket.roomCode].informHost();
+                    return;
+                }
+
+                // add terminateGame listener
+                socket.on('terminateGame', (termCallback: CallableFunction) => {
+                    socket.removeAllListeners('terminateGame');
                     if (socket.roomCode && this.activeGames[socket.roomCode]) {
+                        this.activeGames[socket.roomCode].gameData.public.base.gameState = 'TERMINATED';
+                        this.activeGames[socket.roomCode].informAllPlayers();
                         delete this.activeGames[socket.roomCode];
                         console.log('deleted game ' + socket.roomCode);
-                        termCallback();
+                        termCallback(true);
+                    } else {
+                        termCallback(false);
                     }
                 });
-                // TODO choose types of games (gameType==0)
-                g = new QuailGame(socket, this.io, gameOptions);
-                socket.roomCode = g.gameData.roomCode;
-                socket.join(socket.roomCode);
-                this.activeGames[g.gameData.roomCode] = g;
-                console.log("created game", g.gameData.roomCode);
+
+                const roomCode = util.generateRoomCode(Object.keys(this.activeGames));
+                g = new QuailGame(socket, hostUid, roomCode, gameOptions);
+                this.activeGames[g.gameData.public.base.roomCode] = g;
+                console.log("created game", g.gameData.public.base.roomCode);
                 g.informHost();
             });
 
-            socket.on('requestJoin', (r, callback: CallableFunction) => {
+            socket.on('requestJoin', (r: { uid: string, roomCode: string, name: string }, callback: CallableFunction) => {
                 let foundGame = this.activeGames[r.roomCode];
                 if (foundGame) {
-                    if (!foundGame.playerList.names.includes(r.name)) {
-                        let p = foundGame.join(socket, r.name, r.uid);
-                        callback(true, p.clientData);
+                    if (util.isValidUid(r.uid)) {
+                        if (r.name.length > 0) {
+                            // if desired name not already in playerList
+                            if (!foundGame.playerList.names.includes(r.name)) {
+                                let p = foundGame.join(socket, r.uid, r.name);
+                                callback(true, p.playerData);
+                            } else {
+                                callback(false, 'name is taken');
+                            }
+                        } else {
+                            callback(false, 'name too short');
+                        }
                     } else {
-                        callback(false, 'name is taken');
+                        callback(false, 'invalid uid')
                     }
                 } else {
-                    callback('room not found');
+                    callback(false, 'room not found');
                 }
             });
         });

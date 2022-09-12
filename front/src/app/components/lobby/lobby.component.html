@@ -2,9 +2,10 @@
     <div class="lobby card full mx-auto p-0">
         <div class="stripey-blue card full box is-flex-direction-column">
             <div>
-                <h2 class="has-text-right is-size-3 text-condensed">
-                    Room code:<span id="span-room-code" class="is-size-1 ml-2 text-wide">{{sio.gameData?.roomCode ||
-                        "..."}}</span>
+                <h2 class="is-size-3 text-condensed">
+                    Room code:<span id="span-room-code" class="is-size-1 ml-2 text-wide"
+                        [ngClass]="sio.gameData?.public?.base?.roomCode || 'text-loading'">{{sio.gameData?.public?.base?.roomCode
+                        || ""}}</span>
                 </h2>
             </div>
             <div class="columns is-mobile w-100 pb-3">
@@ -12,21 +13,21 @@
                     <p class="has-text-left is-size-5 has-text-weight-semibold is-uppercase">
                         Join on your phones
                     </p>
-                    <p class="is-size-6">Head to quail.io and join using the room code!</p>
+                    <p class="is-size-6">Head to {{hostName}}/play and join using the room code!</p>
                 </div>
                 <div class="column is-flex p-0">
-                    <div class="has-tooltip-left is-align-self-flex-end ml-auto" [attr.data-tooltip]="hasEnoughPlayers() ? '' : '🥸 This game has a minimum of 3 players'">
-                        <button class="start-btn button is-neutral" [disabled]="!hasEnoughPlayers()" (click)="startGame()">
+                    <div class="is-align-self-flex-end ml-auto has-tooltip-left"
+                        [attr.data-tooltip]="hasEnoughPlayers() ? null : '🥸 This game has a minimum of 3 players'">
+                        <button class="start-btn button is-neutral" [disabled]="!hasEnoughPlayers()"
+                            (click)="startGame()">
                             PARTY 🥳
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="columns w-100 px-2 is-mobile">
-            <div class="column auto-grid5 text-condensed">
-                <div *ngFor="let name of sio.gameData?.playerNames" class="button" (click)="bootPlayer(name);">{{name}}
-                </div>
+        <div class="entrant-names text-condensed">
+            <div *ngFor="let name of sio.gameData?.playerNames" class="button" (click)="bootPlayer(name);">{{name}}
             </div>
         </div>
     </div>

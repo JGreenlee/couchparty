@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SocketioService } from 'src/app/services/socketio.service';
 
@@ -7,17 +7,19 @@ import { SocketioService } from 'src/app/services/socketio.service';
   templateUrl: './join.component.html',
   styleUrls: ['./join.component.scss']
 })
-export class JoinComponent implements OnInit, AfterViewInit {
+export class JoinComponent implements AfterViewInit {
 
   freeze: boolean = false;
   submittedResult: boolean = false;
 
   joinFailedMessage!: string;
 
+  // a FormGroup which houses the fields we will apply validation to
   form = new FormGroup({
     qName: new FormControl('', [Validators.required, Validators.minLength(4)]),
     qRoomCode: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)])
   });
+  get f() { return this.form.controls; }
 
   constructor(public sio: SocketioService) { }
 
@@ -31,18 +33,17 @@ export class JoinComponent implements OnInit, AfterViewInit {
     }
   }
 
-  get f() {
-    return this.form.controls;
-  }
-
+  /**
+   * Ensures that form data passes validation, emits a 'requestJoin' event, and handles the result
+   */
   trySubmit(): void {
 
     if (!this.freeze && this.f.qName.valid && this.f.qRoomCode.valid) {
       this.freeze = true;
       this.sio.emit('requestJoin', {
+        'uid': this.sio.uid,
         'roomCode': this.f.qRoomCode.value,
         'name': this.f.qName.value,
-        'uid': this.sio.uid
       }, (success, response) => {
         if (success) {
           this.sio.updateMyPlayerData(response);
@@ -52,8 +53,4 @@ export class JoinComponent implements OnInit, AfterViewInit {
       });
     }
   }
-
-  ngOnInit(): void {
-  }
-
 }

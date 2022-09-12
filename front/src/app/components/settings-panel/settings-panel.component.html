@@ -1,0 +1,17 @@
+<div id="settings" (mouseover)="setShown(true)" (mouseout)="setShown(false)">
+    <div class="settings-text text-600">SETTINGS</div>
+      <div class="content">
+          <label for="switch-fullscreen" class="switch">
+              <input #switchFullscreen id="switch-fullscreen" type="checkbox" name="switch-fullscreen" [disabled]="!shown"
+                  [checked]="isFullscreen" (click)="applyFullscreenStatus($event);">
+              <span class="slider"></span>
+              <span class="label-text px-2">» Fullscreen ↗️</span>
+          </label>
+          <label for="switch-darkmode" class="switch">
+              <input #switchDarkMode id="switch-darkmode" type="checkbox" name="switch-darkmode" [disabled]="!shown"
+                  [checked]="isDarkMode()" (click)="applyDarkModeStatus($event);">
+              <span class="slider"></span>
+              <span class="label-text px-2">» Dark mode 🌙</span>
+          </label>
+      </div>
+  </div>

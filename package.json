@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.ts",
-  "engines": {
-    "node": "16.17.0"
-  },
   "scripts": {
     "front-update": "cd front && npm i && npm update",
     "back-update": "cd back && npm i && npm update",

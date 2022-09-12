@@ -9,10 +9,10 @@
             <div class="columns is-mobile w-100 pt-5 m-auto">
                 <div class="column is-align-self-center p-0 has-text-left">
                     <p class="has-text-centered is-size-5 has-text-weight-semibold is-uppercase">
-                        {{(sio.gameData?.roundNumber! < 3) ? 'Round ' + sio.gameData?.roundNumber + ' scores' : 'Final standings'}}
+                        {{(sio.gameData?.public?.roundNumber! < 3) ? 'Round ' + sio.gameData?.public?.roundNumber + ' scores' : 'Final standings'}}
                     </p>
                 </div>
-                <div *ngIf="sio.gameData?.roundNumber! < 3" class="column is-flex p-0">
+                <div *ngIf="sio.gameData?.public?.roundNumber! < 3" class="column is-flex p-0">
                     <button class="button is-neutral is-align-self-flex-end ml-auto"
                         (click)="startNextRound()">
                         NEXT
@@ -21,14 +21,14 @@
             </div>
         </div>
         <div class="scores-list p-3 has-text-centered">
-            <div *ngFor="let e of rank(sio.gameData?.scores || []); index as i; count as c"
+            <div *ngFor="let e of rank(sio.gameData?.public?.base?.scores || []); index as i; count as c"
                 class="columns is-mobile w-100 py-1 mx-auto my-1 card"
                 [style.transform]="'translateX('+ ((i*(20/(c-1))-10) + ((i%2==1) ? 10 : -10)) +'%)'">
                 <div class="column is-align-self-center">
                     {{e[0]}}
                 </div>
                 <div class="column is-flex">
-                    <div class="tag is-primary is-align-self-center" [style.width]="((e[1])/(rank(sio.gameData?.scores!)[0][1])*100)+'%'">
+                    <div class="tag is-primary is-align-self-center" [style.width]="((e[1])/(rank(sio.gameData?.public?.base?.scores!)[0][1])*100)+'%'">
                         {{e[1]}}
                     </div>
                 </div>
