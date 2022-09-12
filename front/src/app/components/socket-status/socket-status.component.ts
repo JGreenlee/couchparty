@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { SocketioService } from 'src/app/services/socketio.service';
+import { version } from '../../../../../package.json'
 
 @Component({
   selector: 'app-socket-status',
@@ -104,10 +105,12 @@ export class SocketStatusComponent implements AfterViewInit {
     r += "\n\n";
 
     if (this.sio.uid) {
-      r += 'UID: ' + this.sio.uid + '\xa0✅';
+      r += this.sio.uid + '\nUID registered ✅';
     } else {
       r += 'UID not registered ❌'
     }
+
+    r += '\n\nVersion: ' + version;
 
     if (this.latencyAvg) {
       r += '\n\nAvg latency: ' + this.latencyAvg;
