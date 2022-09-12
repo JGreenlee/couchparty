@@ -3,7 +3,7 @@
         <div *ngIf="sio.gameData?.qPromptAnswers?.[promptIdOnBallot()][0].promptText"
             class="card prompt-title color-shadows" [ngClass]="twoRandColorClasses + ' ' + getAwaitingStatus('started', 1000, 'card0')">
             <div class="is-size-5 has-text-weight-medium">
-                <i>{{sio.gameData?.qPromptAnswers?.[promptIdOnBallot()][0].promptText || 'loading'}}</i>
+                <i [innerHtml]="sio.gameData?.qPromptAnswers?.[promptIdOnBallot()][0].promptText || 'loading'"></i>
             </div>
         </div>
         <div class="columns is-mobile is-justify-content-center">

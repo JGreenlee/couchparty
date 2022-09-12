@@ -30,8 +30,13 @@ export class HostComponent implements OnInit, AfterViewInit, DoCheck {
     });
   }
 
-  @HostListener("window:resize", ['event'])
   ngAfterViewInit(): void {
+    this.setScale();
+    setInterval(this.setScale, 1000);
+  }
+
+  @HostListener("window:resize", ['event'])
+  setScale() {
     util.calculateScale(1100, 1400, 600, 1000);
   }
 

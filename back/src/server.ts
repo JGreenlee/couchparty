@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import http from 'http';
 import compression from 'compression';
@@ -32,6 +35,8 @@ const httpConn = http.createServer(app);
 // export const sio =
 new CouchSocket(httpConn, {
     path: '/socket.io',
+    pingTimeout: 10000,
+    pingInterval: 1000,
     cors: true,
     origins: ["*"]
 });

@@ -21,6 +21,8 @@ export class AppComponent implements OnInit, AfterViewInit {
         bc.close();
         this.sio.getSocket().then((sock) => {
           sock.disconnect();
+          console.log('idosconnectu');
+          
           sio.disconnected = true;
           sio.disconnectedMessage = 'The game is already open in another tab.\n\nYou may close this tab.';
         });

@@ -11,8 +11,13 @@ import * as util from 'src/app/services/util';
 export class BallotComponent implements AfterViewInit {
 
   didReqNextBallot: boolean = false;
+  twoRandColorClasses: string[];
 
-  constructor(public sio: SocketioService, private router: Router, private route: ActivatedRoute) { }
+  constructor(public sio: SocketioService, private router: Router, private route: ActivatedRoute) {
+    this.twoRandColorClasses = util.twoRandColorClasses();
+    console.log(this.twoRandColorClasses);
+    
+  }
 
   ngAfterViewInit(): void {
     if (this.sio.DEBUG) {
@@ -56,8 +61,9 @@ export class BallotComponent implements AfterViewInit {
     return !this.sio.playerData?.qPrompts?.find(o => o.promptId == this.promptIdOnBallot())
   }
 
-  vote(chosenIndex: number, colorIndex) {
+  vote(chosenIndex: number, colorClass : string) {
     const pid = this.promptIdOnBallot();
+    const colorIndex = util.colorClasses.indexOf(colorClass);
     if (pid) {
       this.sio.emit('qVote', pid, chosenIndex, colorIndex, (playerData) => {
         this.sio.updateMyPlayerData(playerData);

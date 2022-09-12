@@ -33,8 +33,13 @@ export class PlayerComponent implements OnInit, DoCheck, AfterViewInit {
     });
   }
 
-  @HostListener("window:resize", ['event'])
   ngAfterViewInit(): void {
+    this.setScale();
+    setInterval(this.setScale, 1000);
+  }
+
+  @HostListener("window:resize", ['event'])
+  setScale() {
     util.calculateScale(400, 1200, 600, 1000);
   }
 

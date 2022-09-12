@@ -1,6 +1,6 @@
 import type { QpaData } from "../../../../back/src/Games/Quail/QuailGameData";
 
-export function calculateScale(minWidth, maxWidth, minHeight, maxHeight) {
+export function calculateScale(minWidth, maxWidth, minHeight, maxHeight) {    
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
     if (vw < minWidth || vh < minHeight) {
@@ -60,4 +60,9 @@ export function readPromptIdAtIndex(qpa: { promptId?: QpaData[] }, bi: number): 
         }
     }
     return undefined;
+}
+
+export const colorClasses = ['is-primary', 'is-secondary', 'is-tertiary', 'is-quaternary'];
+export function twoRandColorClasses() : string[] {
+    return [...colorClasses].sort(() => 0.5 - Math.random()).splice(0, 2);
 }

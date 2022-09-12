@@ -11,6 +11,7 @@ export class LobbyComponent implements AfterViewInit {
 
   numPlayers: number = 0;
   hostName: string = window.location.hostname;
+  bootingPlayer?: string;
 
   constructor(private router: Router, public sio: SocketioService) { }
 
@@ -41,7 +42,12 @@ export class LobbyComponent implements AfterViewInit {
   }
 
   bootPlayer(name: string) {
-    this.sio.emit('bootPlayer', name);
+    this.bootingPlayer = name;
+    this.sio.emitTimeout(2000, 'bootPlayer', name, (err)=>{
+      if (err) {
+        this.bootingPlayer = '';
+      }
+    });
   }
 
   hasEnoughPlayers() {

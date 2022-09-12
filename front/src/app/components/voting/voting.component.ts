@@ -15,13 +15,12 @@ export class VotingComponent implements AfterViewInit {
 
   started?: boolean;
   lastNumGenerated?: number;
-  colorClasses: string[];
+  colorClasses = util.colorClasses;
   twoRandColorClasses: string;
   didReqNextBallot: boolean = false;
 
   constructor(public sio: SocketioService, private router: Router, private route: ActivatedRoute) {
-    this.colorClasses = ['is-primary', 'is-secondary', 'is-tertiary', 'is-quaternary'];
-    this.twoRandColorClasses = [...this.colorClasses].sort(() => 0.5 - Math.random()).splice(0, 2).join(' ');
+    this.twoRandColorClasses = util.twoRandColorClasses().join(' ')
   }
 
   ngAfterViewInit(): void {

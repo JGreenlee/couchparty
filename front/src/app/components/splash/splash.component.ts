@@ -13,8 +13,13 @@ export class SplashComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  @HostListener("window:resize", ['event'])
   ngAfterViewInit(): void {
+    this.setScale();
+    setInterval(this.setScale, 1000);
+  }
+
+  @HostListener("window:resize", ['event'])
+  setScale() {
     util.calculateScale(400, 1400, 600, 1000);
   }
 

@@ -11,6 +11,7 @@ export abstract class Game {
 
     host: Host;
     destroyMethod?: CallableFunction;
+    onFinished! : CallableFunction;
 
     abstract gameTypeName: string;
     abstract gameData: GameData;
@@ -67,7 +68,6 @@ export abstract class Game {
     abstract createHost(hostSocket: Socket, hostUid: string, roomCode: string, gameData : GameData): Host // abstract
 
     informHost() {
-        console.debug(this.gameData);
         this.host.socket.emit('gameData', this.gameData);
     }
 
@@ -98,11 +98,4 @@ export abstract class Game {
     //         return null;
     //     }
     // }
-
-    // TODO use broadcast or toRoom instead of emitting all
-    hostDisconnected(destroyTime: number) {
-        this.playerList.objs.forEach((p) => {
-            p.socket.emit('hostDisconnected', destroyTime);
-        });
-    }
 }

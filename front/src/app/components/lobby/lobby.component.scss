@@ -42,6 +42,10 @@
     transition: filter .3s, transform .1s
 }
 
+.blurred {
+    filter: saturate(0%) blur(.2rem);
+}
+
 .entrant-names {
     display: flex;
     flex-wrap: wrap;

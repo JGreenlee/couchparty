@@ -1,8 +1,9 @@
 import { Server } from 'socket.io';
-import { QuailGame } from "./Games/Quail/QuailGame";
-import { Game } from "./Game";
+import { QuailGame } from './Games/Quail/QuailGame';
+import { Game } from './Game';
 import { Player } from './Player';
 import * as util from './util/util';
+import { Socket } from 'dgram';
 
 export class CouchSocket {
 
@@ -12,6 +13,17 @@ export class CouchSocket {
     constructor(conn, args) {
         this.io = new Server(conn, args);
         this.io.on('connection', (socket: any) => {
+
+            if (process.env.DEBUG_LATENCY) {
+                const emitFn = socket.emit;
+                socket.emit = (...args) => setTimeout(() => {
+                    emitFn.apply(socket, args)
+                }, 1000);
+            }
+
+            socket.on('qPing', (ack) => {
+                ack();
+            });
 
             let g: Game;
             console.log('connected ' + socket.id);
@@ -54,8 +66,6 @@ export class CouchSocket {
             });
 
             socket.on('register', (rd, ackRegister) => {
-                console.log('registering, rd=', rd);
-
                 if (rd && rd['uid']) {
                     if (rd['roomCode']) {
                         const g = this.activeGames[rd['roomCode']];
@@ -90,7 +100,7 @@ export class CouchSocket {
                                     return;
                                 }
                             }
-                            console.log('found game but not did not remind player');
+                            console.log('found game but did not remind player');
                         }
                     }
                     console.log('uid remembered as ' + rd['uid'] + ' but not in any active game.', 'roomcode was', rd.roomCode);
@@ -126,6 +136,9 @@ export class CouchSocket {
 
                 const roomCode = util.generateRoomCode(Object.keys(this.activeGames));
                 g = new QuailGame(socket, hostUid, roomCode, gameOptions);
+                g.onFinished = (game : Game) => {
+                    delete this.activeGames[game.gameData.public.base.roomCode];
+                }
                 this.activeGames[g.gameData.public.base.roomCode] = g;
                 console.log("created game", g.gameData.public.base.roomCode);
                 g.informHost();
@@ -147,15 +160,12 @@ export class CouchSocket {
                             callback(false, 'name too short');
                         }
                     } else {
-                        callback(false, 'invalid uid')
+                        callback(false, 'invalid uid');
                     }
                 } else {
                     callback(false, 'room not found');
                 }
             });
-        });
-        this.io.on('qClientPing', (ack) => {
-            ack();
         });
     }
 }

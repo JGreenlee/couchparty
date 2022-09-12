@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="entrant-names text-condensed">
-            <div *ngFor="let name of sio.gameData?.playerNames" class="button" (click)="bootPlayer(name);">{{name}}
+            <div *ngFor="let name of sio.gameData?.playerNames" class="button" (click)="bootPlayer(name);" [ngClass]="bootingPlayer == name ? 'blurred' : ''">{{name}}
             </div>
         </div>
     </div>

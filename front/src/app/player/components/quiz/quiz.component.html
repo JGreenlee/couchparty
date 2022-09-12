@@ -3,8 +3,8 @@
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="form-group field">
                 <label for="qFirstAnswer" class="label"
-                    [ngClass]="sio.playerData?.qPrompts?.[0]?.promptText ? '' : 'text-loading'">
-                    {{sio.playerData?.qPrompts?.[0]?.promptText || 'loading'}}
+                    [ngClass]="sio.playerData?.qPrompts?.[0]?.promptText ? '' : 'text-loading'"
+                    [innerHtml]="sio.playerData?.qPrompts?.[0]?.promptText || 'loading'">
                 </label>
                 <div class="control has-icons-right">
                     <input formControlName="qFirstAnswer" id="qFirstAnswer" type="text" class="input form-control"
@@ -15,14 +15,13 @@
                     </span>
                 </div>
                 <div *ngIf="f.qFirstAnswer.touched || f.qFirstAnswer.dirty">
-                    <p *ngIf="f.qFirstAnswer.errors?.['required']" class="help is-danger">Name is required.</p>
-                    <p *ngIf="f.qFirstAnswer.errors?.['minlength']" class="help is-danger">4+ characters please</p>
+                    <p *ngIf="f.qFirstAnswer.errors?.['required']" class="help is-danger">This prompt is required.</p>
                 </div>
             </div>
             <div class="form-group field">
                 <label for="qSecondAnswer" class="label"
-                    [ngClass]="sio.playerData?.qPrompts?.[1]?.promptText ? '' : 'text-loading'">
-                    {{sio.playerData?.qPrompts?.[1]?.promptText || 'loading'}}
+                    [ngClass]="sio.playerData?.qPrompts?.[1]?.promptText ? '' : 'text-loading'"
+                    [innerHtml]="sio.playerData?.qPrompts?.[1]?.promptText || 'loading'">
                 </label>
                 <div class="control has-icons-right">
                     <input formControlName="qSecondAnswer" id="qSecondAnswer" type="text" class="input form-control"
@@ -33,8 +32,7 @@
                     </span>
                 </div>
                 <div *ngIf="f.qSecondAnswer.touched || f.qSecondAnswer.dirty">
-                    <p *ngIf="f.qSecondAnswer.errors?.['required']" class="help is-danger">Name is required.</p>
-                    <p *ngIf="f.qSecondAnswer.errors?.['minlength']" class="help is-danger">4+ characters please</p>
+                    <p *ngIf="f.qSecondAnswer.errors?.['required']" class="help is-danger">This prompt is required.</p>
                 </div>
             </div>
             <div *ngIf="!quizSubmitted; else submitted" class="field is-grouped is-justify-content-center">

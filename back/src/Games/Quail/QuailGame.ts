@@ -15,10 +15,10 @@ export interface QuailGameOptions {
 }
 
 export type QuailGameState =
-    'INTRO' |           // tutorial
-    'ANSWERING' |       // prompts have been sent, waiting for players' answers
-    'VOTING' |          // answers received, voting has begun
-    'LEADERBOARD'       // viewing scores
+      'INTRO'           // tutorial
+    | 'ANSWERING'       // prompts have been sent, waiting for players' answers
+    | 'VOTING'          // answers received, voting has begun
+    | 'LEADERBOARD'     // viewing scores
 ;
 
 export class QuailGame extends Game {
@@ -178,11 +178,13 @@ export class QuailGame extends Game {
                             } else {
                                 if (this.gameData.public.roundNumber < 3) {
                                     this.gameData.public.roundNumber += 1;
+                                    this.showLeaderboard();
+                                } else {
+                                    this.showLeaderboard();
+                                    this.onFinished(this);
                                 }
-                                this.showLeaderboard();
                             }
                         });
-
                         this.informHost();
                     }
                 }

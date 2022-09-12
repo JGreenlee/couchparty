@@ -18,7 +18,8 @@ export class RankComponent implements OnInit {
       const sorted = Object.keys(s).sort(function (a, b) { return s[b] - s[a] });
       const i = sorted.indexOf(this.sio.playerData?.myName!) + 1;
       // format as 1st, 2nd, 3rd, etc..
-      return i + ([, 'st', 'nd', 'rd'][i / 10 % 10 ^ 1 && i % 10] || 'th');
+      const p = i + ([, 'st', 'nd', 'rd'][i / 10 % 10 ^ 1 && i % 10] || 'th');
+      return `You're in ${p} place!`
     }
     return '';
   }

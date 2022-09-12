@@ -83,16 +83,9 @@ export class SocketioService {
           if (uid) {
             window.localStorage.setItem('qUserId', uid);
             this.uid = uid;
-
             if (rememberedClientData) {
               this.disableAnimations = false;
-              if (rememberedClientData.hasOwnProperty('isGameData')) {
-                this.updateMyGameData(rememberedClientData as QuailGameData);
-              } else if (rememberedClientData.hasOwnProperty('isPlayerData')) {
-                this.updateMyPlayerData(rememberedClientData as QuailPlayerData);
-              } else {
-                console.log('rememberedClientData did not appear to be either gd or pd');
-              }
+              this.updateClientData(rememberedClientData);
             }
             if (this.onceRegisteredPromise) {
               this.onceRegisteredPromise(true);
@@ -101,7 +94,22 @@ export class SocketioService {
             alert('It looks like you are already connected in another tab. If this is not the case, clear your cookies and try again.');
           }
         });
-        sock.on("reconnect", () => {
+        setInterval(() => {
+          const now = Date.now();
+          sock.timeout(3000).emit('qPing', (err, clientData?) => {
+            if (err) {
+              this.disconnected = true;
+              this.disconnectedMessage = err;
+              return;
+            } else {
+              this.disconnected = false;
+            }
+            if (clientData) {
+              this.updateClientData(clientData);
+            }
+          });
+        }, 2500);
+        sock.on("connect", () => {
           this.disconnected = false;
         });
         sock.on("disconnect", () => {
@@ -180,6 +188,16 @@ export class SocketioService {
         }
       }
     });
+  }
+
+  updateClientData(rememberedClientData) {
+    if (rememberedClientData.hasOwnProperty('isGameData')) {
+      this.updateMyGameData(rememberedClientData as QuailGameData);
+    } else if (rememberedClientData.hasOwnProperty('isPlayerData')) {
+      this.updateMyPlayerData(rememberedClientData as QuailPlayerData);
+    } else {
+      console.log('rememberedClientData did not appear to be either gd or pd');
+    }
   }
 
   clientData() {

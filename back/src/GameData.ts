@@ -19,4 +19,4 @@ export interface PublicGameData {
     hostDisconnected: number;
 }
 
-export type GameState = 'LOBBY' | 'PAUSED' | 'TERMINATED';
+export type GameState = 'LOBBY' | 'PAUSED' | 'FINISHED' | 'TERMINATED';

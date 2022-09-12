@@ -16,7 +16,7 @@ export class JoinComponent implements AfterViewInit {
 
   // a FormGroup which houses the fields we will apply validation to
   form = new FormGroup({
-    qName: new FormControl('', [Validators.required, Validators.minLength(4)]),
+    qName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     qRoomCode: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)])
   });
   get f() { return this.form.controls; }

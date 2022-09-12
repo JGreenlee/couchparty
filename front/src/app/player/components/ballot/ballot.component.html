@@ -1,19 +1,20 @@
 <div class="slide-wrapper">
     <div class="card mx-auto p-3 has-text-centered">
-        <div class="prompt-title px-4"><i [ngClass]="promptText() ? '' : 'text-loading'">{{promptText() ||
-                'loading'}}</i></div>
+        <div class="prompt-title px-4">
+            <i [ngClass]="promptText() ? '' : 'text-loading'" [innerHtml]="promptText() || 'loading'"></i>
+        </div>
         <div *ngIf="isEligibleVoter(); else notEligible">
             <div *ngIf="promptIdOnBallot() && sio.playerData?.qMyVotes?.[promptIdOnBallot()] == undefined; else voted"
                 class="ballot-btns columns is-mobile p-3">
                 <div class="column p-0">
-                    <button class="ballot-btn button is-pulled-right is-secondary" aria-label="choose left"
-                        (click)="vote(0, 3)">
+                    <button class="ballot-btn button is-pulled-right" [ngClass]="twoRandColorClasses[0]"
+                        aria-label="choose left" (click)="vote(0, twoRandColorClasses[0])">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                 </div>
                 <div class="column p-0">
-                    <button class="ballot-btn button is-pulled-left is-quaternary" aria-label="choose right"
-                        (click)="vote(1, 2)">
+                    <button class="ballot-btn button is-pulled-left" [ngClass]="twoRandColorClasses[1]"
+                        aria-label="choose right" (click)="vote(1, twoRandColorClasses[1])">
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>

@@ -9,14 +9,24 @@
             <div class="columns is-mobile w-100 pt-5 m-auto">
                 <div class="column is-align-self-center p-0 has-text-left">
                     <p class="has-text-centered is-size-5 has-text-weight-semibold is-uppercase">
-                        {{(sio.gameData?.public?.roundNumber! < 3) ? 'Round ' + sio.gameData?.public?.roundNumber + ' scores' : 'Final standings'}}
+                        {{
+                            sio.gameData?.public?.roundNumber != undefined ?
+                            (sio.gameData?.public?.roundNumber! < 3) ? 'Round ' + sio.gameData?.public?.roundNumber
+                                + ' scores' : 'Final standings'
+                            : 'loading...'
+                        }}
                     </p>
                 </div>
-                <div *ngIf="sio.gameData?.public?.roundNumber! < 3" class="column is-flex p-0">
-                    <button class="button is-neutral is-align-self-flex-end ml-auto"
-                        (click)="startNextRound()">
+                <div class="column is-flex p-0">
+                    <button *ngIf="sio.gameData?.public?.roundNumber! < 3; else newGameBtn"
+                        class="button is-neutral is-align-self-flex-end ml-auto" (click)="startNextRound()">
                         NEXT
                     </button>
+                    <ng-template #newGameBtn>
+                        <button class="button is-neutral is-align-self-flex-end ml-auto" (click)="startNextRound()">
+                            NEXT
+                        </button>
+                    </ng-template>
                 </div>
             </div>
         </div>
@@ -28,7 +38,8 @@
                     {{e[0]}}
                 </div>
                 <div class="column is-flex">
-                    <div class="tag is-primary is-align-self-center" [style.width]="((e[1])/(rank(sio.gameData?.public?.base?.scores!)[0][1])*100)+'%'">
+                    <div class="tag is-primary is-align-self-center"
+                        [style.width]="((e[1])/(rank(sio.gameData?.public?.base?.scores!)[0][1])*100)+'%'">
                         {{e[1]}}
                     </div>
                 </div>

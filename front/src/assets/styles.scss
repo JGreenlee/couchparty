@@ -87,13 +87,6 @@ router-outlet {
   width: 100%;
 }
 
-.anim-zoom {
-  &:hover {
-    transition: transform 100ms !important;
-    transform: scale(1.2);
-  }
-}
-
 .absolutely-centered {
   position: absolute;
   bottom: 50%;
@@ -121,6 +114,15 @@ router-outlet {
   100% {
     opacity: 1;
   }
+}
+
+u:empty:after {
+  content: "";
+  display: inline-block;
+  background: currentColor;
+  width: 4rem;
+  height: 0.11rem;
+  border-radius: 1rem;
 }
 
 .text-900 {

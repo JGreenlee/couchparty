@@ -3,13 +3,22 @@
     <div class="modal-content p-5">
         <div class="card mx-auto px-3">
             <div class="card-content has-text-centered">
+                <p class="mx-auto pb-5">
+                    <app-loader></app-loader>
+                </p>
                 <p *ngIf="sio.playerData?.public?.base?.hostDisconnected">
                     The hosting device has disconnected. If it does not reconnect within
-                    {{secondsLeft}} seconds, this game will end.
+                    <span class="tag is-danger mx-1 is-family-monospace has-text-weight-bold" style="max-width: 1.5rem;">
+                        {{secondsLeft}}
+                    </span>
+                    seconds, this game will end.
                 </p>
-                <p style="white-space: pre" *ngIf="sio.disconnected">
-                    {{sio.disconnectedMessage}}
-                </p>
+                <div *ngIf="sio.disconnected">
+                    <p>You are not connected.</p>
+                    <p style="white-space: pre">
+                        {{sio.disconnectedMessage}}
+                    </p>
+                </div>
             </div>
         </div>
     </div>

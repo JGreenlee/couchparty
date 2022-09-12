@@ -2,7 +2,7 @@
     <div class="card mx-auto p-3">
         <form [formGroup]="form" [style.max-height]="sio.playerData?.public?.base?.roomCode? '0' : '20rem'">
             <div class="form-group field">
-                <label for="qName" class="label">What's your name?</label>
+                <label for="qName" class="label">Your name:</label>
                 <div class="control has-icons-right">
                     <input formControlName="qName" id="qName" type="text" class="input form-control"
                         placeholder="Max 12 characters" (input)="freeze = false; this.f.qRoomCode.reset();"
@@ -13,11 +13,11 @@
                 </div>
                 <div *ngIf="f.qName.touched || f.qName.dirty">
                     <p *ngIf="f.qName.errors?.['required']" class="help is-danger">Name is required.</p>
-                    <p *ngIf="f.qName.errors?.['minlength']" class="help is-danger">4+ characters please</p>
+                    <p *ngIf="f.qName.errors?.['minlength']" class="help is-danger">You must use at least 2 characters</p>
                 </div>
             </div>
             <div class="form-group field">
-                <label for="qRoomCode" class="label">What's the password?</label>
+                <label for="qRoomCode" class="label">Room code:</label>
                 <div class="control has-icons-right">
                     <input formControlName="qRoomCode" id="qRoomCode" type="text" class="input form-control"
                         [ngClass]="f.qRoomCode.errors && f.qRoomCode.touched ? 'is-danger' : ''" autocomplete="off"
