@@ -34,13 +34,8 @@ export class PlayerComponent implements OnInit, DoCheck, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.setScale();
-    setInterval(this.setScale, 1000);
-  }
-
-  @HostListener("window:resize", ['event'])
-  setScale() {
-    util.calculateScale(400, 1200, 600, 1000);
+    util.constrainViewport(400, 1200, 600, 1000);
+    util.calculateScale();
   }
 
   updateDarkMode(e) {

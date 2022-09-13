@@ -3,6 +3,7 @@ import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { blockOnRender, slide } from './route-animations';
 import { SocketioService } from './services/socketio.service';
+import * as util from './services/util';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.sio.getSocket().then((sock) => {
           sock.disconnect();
           console.log('idosconnectu');
-          
+
           sio.disconnected = true;
           sio.disconnectedMessage = 'The game is already open in another tab.\n\nYou may close this tab.';
         });
@@ -41,6 +42,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.sio.disableAnimations = false;
       document.documentElement.style.transition = 'font-size .15s';
     }, 300);
+
+    setInterval(this.setScale, 1000);
+  }
+
+  @HostListener("window:resize", ['event'])
+  setScale() {
+    util.calculateScale();
   }
 
   childAnimData(routerOutlet: RouterOutlet) {

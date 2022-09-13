@@ -22,7 +22,7 @@ export class HostComponent implements OnInit, AfterViewInit, DoCheck {
         this.currentSlideComponent[cmd](params);
       });
     });
-    this.sio.onceRegistered().then(()=>{
+    this.sio.onceRegistered().then(() => {
       if (!this.sio.gameData) {
         this.sio.disableAnimations = false;
         this.router.navigate(['/lobby']);
@@ -31,13 +31,8 @@ export class HostComponent implements OnInit, AfterViewInit, DoCheck {
   }
 
   ngAfterViewInit(): void {
-    this.setScale();
-    setInterval(this.setScale, 1000);
-  }
-
-  @HostListener("window:resize", ['event'])
-  setScale() {
-    util.calculateScale(1100, 1400, 600, 1000);
+    util.constrainViewport(1100, 1400, 600, 1000);
+    util.calculateScale();
   }
 
   @HostListener('document:keydown', ['$event'])

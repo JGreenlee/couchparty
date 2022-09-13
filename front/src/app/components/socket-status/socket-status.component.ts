@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { SocketioService } from 'src/app/services/socketio.service';
-import { version } from '../../../../../package.json'
+import packageInfo from '../../../../../package.json'
 
 @Component({
   selector: 'app-socket-status',
@@ -110,7 +110,7 @@ export class SocketStatusComponent implements AfterViewInit {
       r += 'UID not registered ❌'
     }
 
-    r += '\n\nVersion: ' + version;
+    r += '\n\nVersion: ' + packageInfo.version;
 
     if (this.latencyAvg) {
       r += '\n\nAvg latency: ' + this.latencyAvg;

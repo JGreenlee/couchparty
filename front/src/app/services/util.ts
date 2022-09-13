@@ -1,14 +1,27 @@
 import type { QpaData } from "../../../../back/src/Games/Quail/QuailGameData";
 
-export function calculateScale(minWidth, maxWidth, minHeight, maxHeight) {    
-    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-    if (vw < minWidth || vh < minHeight) {
-        const wScale = vw / minWidth, hScale = vh / minHeight
-        document.documentElement.style.fontSize = 118 * Math.min(wScale, hScale) + '%';
-    } else if (vw > maxWidth || vh > maxHeight) {
-        const wScale = vw / maxWidth, hScale = vh / maxHeight;
-        document.documentElement.style.fontSize = 118 * Math.max(wScale, hScale) + '%';
+export function constrainViewport(minWidth, maxWidth, minHeight, maxHeight) {
+    window['minWidth'] = minWidth;
+    window['maxWidth'] = maxWidth;
+    window['minHeight'] = minHeight;
+    window['maxHeight'] = maxHeight;
+}
+
+export function calculateScale() {
+    const minWidth = window['minWidth'];
+    const maxWidth = window['maxWidth'];
+    const minHeight = window['minHeight'];
+    const maxHeight = window['maxHeight'];
+    if (minWidth && maxWidth && minHeight && maxHeight) {
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        if (vw < minWidth || vh < minHeight) {
+            const wScale = vw / minWidth, hScale = vh / minHeight
+            document.documentElement.style.fontSize = 118 * Math.min(wScale, hScale) + '%';
+        } else if (vw > maxWidth || vh > maxHeight) {
+            const wScale = vw / maxWidth, hScale = vh / maxHeight;
+            document.documentElement.style.fontSize = 118 * Math.max(wScale, hScale) + '%';
+        }
     }
 }
 
@@ -63,6 +76,6 @@ export function readPromptIdAtIndex(qpa: { promptId?: QpaData[] }, bi: number): 
 }
 
 export const colorClasses = ['is-primary', 'is-secondary', 'is-tertiary', 'is-quaternary'];
-export function twoRandColorClasses() : string[] {
+export function twoRandColorClasses(): string[] {
     return [...colorClasses].sort(() => 0.5 - Math.random()).splice(0, 2);
 }
